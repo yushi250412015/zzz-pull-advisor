@@ -2,10 +2,10 @@
 
 export const characters = {
   // —— 3.1 版本相关 ——
-  remielle: { id: 'remielle', name: '蕾米埃尔', rarity: 'S', element: 'unknown', role: 'unknown', meta: 70, coreTeammates: [] },
-  sigrid: { id: 'sigrid', name: '希格莉德', rarity: 'S', element: 'unknown', role: 'unknown', meta: 70, coreTeammates: [] },
+  remielle: { id: 'remielle', name: '蕾米埃尔', rarity: 'S', element: 'lumiflux', role: 'anomaly', meta: 70, coreTeammates: [] },
+  sigrid: { id: 'sigrid', name: '希格莉德', rarity: 'S', element: 'ice', role: 'attack', meta: 70, coreTeammates: [] },
   rinna: { id: 'rinna', name: '琉音', rarity: 'S', element: 'physical', role: 'stun', meta: 70, coreTeammates: [] },
-  yuzuha: { id: 'yuzuha', name: '浮波柚叶', rarity: 'S', element: 'unknown', role: 'unknown', meta: 70, coreTeammates: [] },
+  yuzuha: { id: 'yuzuha', name: '浮波柚叶', rarity: 'S', element: 'physical', role: 'support', meta: 70, coreTeammates: [] },
   harumasa: { id: 'harumasa', name: '浅羽悠真', rarity: 'S', element: 'electric', role: 'attack', meta: 70, coreTeammates: [] },
 
   // —— 占位（待替换/校准） ——
