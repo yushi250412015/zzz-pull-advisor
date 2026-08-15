@@ -4,9 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ZZZ 抽卡参谋 · Pull Advisor</title>
+    <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div id="app">开发中……</div>
+    <div class="container">
+      <header>
+        <h1>ZZZ 抽卡参谋</h1>
+        <p class="sub">基于你的 box 与资源，为下版本卡池给出「抽 / 观望 / 跳过」建议（开发中）</p>
+      </header>
+
+      <section class="panel">
+        <h2>资源</h2>
+        <div id="resources-form"></div>
+        <p class="hint">提示：当前引擎仅用「菲林 + 母带」计算资源安全度；保底计数 / 大保底状态留给后续算法。</p>
+      </section>
+
+      <section class="panel">
+        <h2>你的 box</h2>
+        <div id="box-form"></div>
+      </section>
+
+      <section class="panel">
+        <h2>推荐结果</h2>
+        <div id="results-list"></div>
+      </section>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
