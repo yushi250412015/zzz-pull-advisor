@@ -27,3 +27,26 @@ export function parseGachaHistory(records, standardSet) {
   }
   return { box, pity, fails };
 }
+
+/**
+ * 账号欧非统计：历史平均每 S 消耗抽数、UP 胜率。
+ * avgPity 越高于期望（62）越非，越低越欧。
+ */
+export function computeLuckStats(records, standardSet) {
+  const sorted = [...records].sort((a, b) =>
+    String(a.time || '').localeCompare(String(b.time || '')),
+  );
+  let sCount = 0;
+  let wins = 0;
+  for (const rec of sorted) {
+    if (rec.rank_type === '5') {
+      sCount += 1;
+      if (!standardSet.has(rec.name)) wins += 1;
+    }
+  }
+  return {
+    avgPity: sCount > 0 ? sorted.length / sCount : 0,
+    winRate: sCount > 0 ? wins / sCount : 0,
+    sCount,
+  };
+}

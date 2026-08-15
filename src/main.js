@@ -3,7 +3,7 @@ import { banners } from './data/banners.js';
 import { systems } from './models/systems.js';
 import { DEFAULT_CONFIG } from './core/gacha/config.js';
 import { recommendCharacter } from './core/recommend.js';
-import { verdictFromUtility } from './core/decision/decision.js';
+import { verdictFromScore, scoreFromUtility } from './core/decision/decision.js';
 
 const $ = (id) => document.getElementById(id);
 const VERDICT_LABEL = { pull: '抽', consider: '观望', skip: '跳过' };
@@ -46,8 +46,8 @@ function renderResults() {
       bannerCfg: DEFAULT_CONFIG.character,
       favor,
     });
-    const verdict = verdictFromUtility(r.utility);
-    return { banner, favor, verdict, ...r };
+    const verdict = verdictFromScore(scoreFromUtility(r.utility));
+    return { banner, favor, verdict, score: scoreFromUtility(r.utility), ...r };
   });
 
   $('results-list').innerHTML = results
@@ -59,7 +59,7 @@ function renderResults() {
           <label class="favor">喜好 <input type="number" data-favor="${r.banner.characterId}" min="0" max="100" value="${r.favor}" /></label>
           <span class="verdict">${VERDICT_LABEL[r.verdict]}</span>
         </div>
-        <div class="score">总效用 ${r.utility.toFixed(1)}</div>
+        <div class="score">推荐分 ${(r.score * 100).toFixed(0)} / 100（总效用 ${r.utility.toFixed(1)}）</div>
         <ul>
           <li>空手风险 ${(r.risk * 100).toFixed(1)}%</li>
           <li>边际效用 +${r.combatDelta.toFixed(2)}</li>

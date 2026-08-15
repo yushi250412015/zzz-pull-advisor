@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseGachaHistory } from '../src/core/gacha/parse.js';
+import { parseGachaHistory, computeLuckStats } from '../src/core/gacha/parse.js';
 
 const standard = new Set(['莱卡恩', '格莉丝', '11号']);
 
@@ -26,5 +26,21 @@ describe('parseGachaHistory', () => {
     const r = parseGachaHistory(records, standard);
     expect(r.fails).toBe(0);
     expect(r.pity).toBe(0);
+  });
+});
+
+describe('computeLuckStats', () => {
+  it('统计平均每 S 抽数与 UP 胜率', () => {
+    const records = [
+      { name: '莱卡恩', rank_type: '5', time: 't1' }, // 标准（歪）
+      { name: '安比', rank_type: '4', time: 't2' },
+      { name: '安比', rank_type: '4', time: 't3' },
+      { name: '妮可', rank_type: '4', time: 't4' },
+      { name: '安比', rank_type: '4', time: 't5' },
+    ];
+    const s = computeLuckStats(records, standard);
+    expect(s.sCount).toBe(1);
+    expect(s.avgPity).toBe(5);
+    expect(s.winRate).toBe(0);
   });
 });
