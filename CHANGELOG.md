@@ -6,7 +6,10 @@
 
 ### 新增
 
-- **真实账号解析**（2026-08-15，uid 25183553，563 条记录）：`src/data/my-account.js`，UI 支持「载入我的真实账号」一键套用 box / 保底 / 大保底
+- **全量四池账号解析**（uid 25183553，2026-08-15）：常驻 109 / 独家 454 / **音擎 189 / 邦布 416**，共 1168 条；`my-account.js` 含四池保底与 S 级列表
+- **数据源实测校准**（`gacha-log.js` 重写）：真实日志格式为抽卡 H5 页面 URL（webstatic.mihoyo.com/...gacha-v2/index.html）；authkey 须用**原始百分号编码形态**拼接（解码后 `+` 会被当作空格 → retcode=-1 illegal base64）；记录内 `gacha_type` 为 API 内部编码 1/2/3/5（请求参数 1001/2001/3001/5001）；新增 `extractGachaPageUrl`/`extractAuthkey`/`buildApiUrl`
+- 测试 65 项（+4 数据源格式测试）
+- **真实账号解析**（2026-08-15，uid 25183553）：`src/data/my-account.js`，UI 支持「载入我的真实账号」一键套用 box / 保底 / 大保底
 - **ZZZ rank_type 语义修正**（经真实记录核实）：`4 = S 级 / 3 = A 级 / 2 = B 级`（与 Genshin/HSR 不同）；`parseGachaHistory` 支持 `sRankType` 配置，音擎不再入 box
 - **属性体系修正**：7 属性 = 物理/火/冰/电/以太 + 风（3.0，维琳娜）+ 流明 Lumiflux（3.1，蕾米埃尔）；「流变」为蕾米埃尔机制名而非属性名
 - 3.1 卡池补全：上半蕾米埃尔 + 爱芮复刻；下半希格莉德 + 自选混池（琉音/浮波柚叶/浅羽悠真，**首金必不歪** → rateUpChance=1）
