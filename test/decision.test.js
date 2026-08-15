@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { totalUtility, opportunityCost } from '../src/core/decision/decision.js';
+import { totalUtility, opportunityCost, verdictFromUtility } from '../src/core/decision/decision.js';
 import { probabilityOfRateUp } from '../src/core/gacha/pity.js';
 import { DEFAULT_CONFIG } from '../src/core/gacha/config.js';
 import { marginalUtility } from '../src/core/utility/utility.js';
@@ -14,13 +14,21 @@ describe('opportunityCost', () => {
 
 describe('totalUtility', () => {
   it('正项相加、风险与机会成本相减', () => {
-    // 0.7*10 + 0.3*60 - 50*0.2 - 0.5*40 = 7 + 18 - 10 - 20 = -5
-    expect(totalUtility({ combatDelta: 10, favor: 60, risk: 0.2, opportunityCost: 40 })).toBeCloseTo(-5);
+    // 0.7*10 + 0.3*60 - 30*0.2 - 0.2*40 = 7 + 18 - 6 - 8 = 11
+    expect(totalUtility({ combatDelta: 10, favor: 60, risk: 0.2, opportunityCost: 40 })).toBeCloseTo(11);
   });
 
   it('风险越高总效用越低', () => {
     const base = { combatDelta: 10, favor: 60, opportunityCost: 0 };
     expect(totalUtility({ ...base, risk: 0.9 })).toBeLessThan(totalUtility({ ...base, risk: 0.1 }));
+  });
+});
+
+describe('verdictFromUtility', () => {
+  it('按阈值映射结论', () => {
+    expect(verdictFromUtility(10)).toBe('pull');
+    expect(verdictFromUtility(-10)).toBe('consider');
+    expect(verdictFromUtility(-30)).toBe('skip');
   });
 });
 

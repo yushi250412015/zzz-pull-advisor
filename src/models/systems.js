@@ -20,4 +20,12 @@ export const systems = {
     k: 5,
     contributions: { 'zhu-yuan': 0.7, nicole: 0.3 },
   },
+  anomaly: {
+    id: 'anomaly',
+    label: '异常体系',
+    F_min: 0.5,
+    delta_max: 10,
+    k: 5,
+    contributions: { miyabi: 0.7, grace: 0.3 },
+  },
 };
