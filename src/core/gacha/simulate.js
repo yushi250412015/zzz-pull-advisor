@@ -33,6 +33,35 @@ export function simulatePulls(state, n, cfg, rng = Math.random) {
 }
 
 /**
+ * 完整模拟（不提前返回）：抽 n 抽后返回最终状态（用于跨卡池连续模拟）。
+ */
+export function simulatePullsFull(state, n, cfg, rng = Math.random) {
+  let pity = state.pity;
+  let fails = state.fails ?? 0;
+  let sCount = 0;
+  let gotRateUp = false;
+
+  for (let i = 0; i < n; i += 1) {
+    if (rng() < rateAtPull(pity + 1, cfg)) {
+      sCount += 1;
+      pity = 0;
+      if (fails >= cfg.guaranteeAfterFails) {
+        gotRateUp = true;
+        fails = 0;
+      } else if (rng() < cfg.rateUpChance) {
+        gotRateUp = true;
+        fails = 0;
+      } else {
+        fails += 1;
+      }
+    } else {
+      pity += 1;
+    }
+  }
+  return { gotRateUp, pulls: n, sCount, pity, fails };
+}
+
+/**
  * 多次采样估计 n 抽内拿到 UP 的概率。
  */
 export function monteCarloEstimate(state, n, cfg, trials = 100000, rng = Math.random) {
