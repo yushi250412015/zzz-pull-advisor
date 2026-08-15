@@ -28,4 +28,37 @@ export const systems = {
     k: 5,
     contributions: { miyabi: 0.7, grace: 0.3 },
   },
+  // —— 3.x 新体系（先验占位，待社区配队数据校准） ——
+  'wind-anomaly': {
+    id: 'wind-anomaly',
+    label: '风异常（染色）',
+    F_min: 0.5,
+    delta_max: 10,
+    k: 5,
+    contributions: { velina: 0.85 },
+  },
+  'lumiflux-anomaly': {
+    id: 'lumiflux-anomaly',
+    label: '流明异常（流变）',
+    F_min: 0.5,
+    delta_max: 12,
+    k: 6,
+    contributions: { remielle: 0.85 },
+  },
+  'ice-anomaly': {
+    id: 'ice-anomaly',
+    label: '冰异常（异放）',
+    F_min: 0.5,
+    delta_max: 10,
+    k: 5,
+    contributions: { promya: 0.7, aria: 0.3 },
+  },
+  'physical-attack': {
+    id: 'physical-attack',
+    label: '物理强攻',
+    F_min: 0.5,
+    delta_max: 10,
+    k: 5,
+    contributions: { nekomata: 0.7, pulchra: 0.3 },
+  },
 };

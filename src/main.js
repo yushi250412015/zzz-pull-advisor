@@ -4,6 +4,7 @@ import { systems } from './models/systems.js';
 import { DEFAULT_CONFIG } from './core/gacha/config.js';
 import { recommendCharacter } from './core/recommend.js';
 import { verdictFromScore, scoreFromUtility } from './core/decision/decision.js';
+import { myAccount } from './data/my-account.js';
 
 const $ = (id) => document.getElementById(id);
 const VERDICT_LABEL = { pull: '抽', consider: '观望', skip: '跳过' };
@@ -16,11 +17,12 @@ const state = {
 };
 
 function renderResources() {
+  const r = state.resources;
   $('resources-form').innerHTML = `
-    <label>加密母带 <input type="number" data-res="encryptedTapes" min="0" value="0" /></label>
-    <label>菲林 <input type="number" data-res="polychrome" min="0" value="0" /></label>
-    <label>保底计数 <input type="number" data-res="pity" min="0" max="90" value="0" /></label>
-    <label><input type="checkbox" data-res="guaranteed" /> 大保底</label>`;
+    <label>加密母带 <input type="number" data-res="encryptedTapes" min="0" value="${r.encryptedTapes || 0}" /></label>
+    <label>菲林 <input type="number" data-res="polychrome" min="0" value="${r.polychrome || 0}" /></label>
+    <label>保底计数（独家池） <input type="number" data-res="pity" min="0" max="90" value="${r.pity || 0}" /></label>
+    <label><input type="checkbox" data-res="guaranteed" ${r.fails >= 1 ? 'checked' : ''} /> 大保底</label>`;
 }
 
 function renderBox() {
@@ -29,34 +31,54 @@ function renderBox() {
       (c) => `
       <label class="chk">
         <input type="checkbox" data-char="${c.id}" />
-        <span class="badge ${c.element}">${c.element}</span> ${c.name}（${c.rarity}·${c.role}）
+        <span class="badge ${c.element || 'unknown'}">${c.element || '?'}</span> ${c.name}（${c.rarity}·${c.role || '?'}）
       </label>`,
     )
     .join('');
 }
 
 function renderResults() {
-  const results = banners.map((banner) => {
-    const favor = state.favors[banner.characterId] ?? DEFAULT_FAVOR;
-    const r = recommendCharacter({
-      box: state.box,
-      resources: state.resources,
-      characterId: banner.characterId,
-      systems,
-      bannerCfg: DEFAULT_CONFIG.character,
-      favor,
-    });
-    const verdict = verdictFromScore(scoreFromUtility(r.utility));
-    return { banner, favor, verdict, score: scoreFromUtility(r.utility), ...r };
-  });
+  const results = [];
+  for (const banner of banners) {
+    const targets = banner.selectable
+      ? banner.selectable.map((id) => ({ id, label: `自选·${characters[id].name}` }))
+      : [{ id: banner.characterId, label: '' }];
+    // 下半自选混池「首金必不歪」：首金必为所选角色（rateUpChance = 1）
+    const cfg = banner.firstGoldGuaranteed
+      ? { ...DEFAULT_CONFIG.character, rateUpChance: 1 }
+      : DEFAULT_CONFIG.character;
+    for (const t of targets) {
+      const favor = state.favors[t.id] ?? DEFAULT_FAVOR;
+      const r = recommendCharacter({
+        box: state.box,
+        resources: state.resources,
+        characterId: t.id,
+        systems,
+        bannerCfg: cfg,
+        favor,
+      });
+      const verdict = verdictFromScore(scoreFromUtility(r.utility));
+      results.push({
+        banner,
+        characterId: t.id,
+        label: t.label,
+        favor,
+        verdict,
+        score: scoreFromUtility(r.utility),
+        guaranteedFirst: !!banner.firstGoldGuaranteed,
+        ...r,
+      });
+    }
+  }
 
   $('results-list').innerHTML = results
     .map(
       (r) => `
       <div class="card verdict-${r.verdict}">
         <div class="head">
-          <span class="name">${characters[r.banner.characterId].name}</span>
-          <label class="favor">喜好 <input type="number" data-favor="${r.banner.characterId}" min="0" max="100" value="${r.favor}" /></label>
+          <span class="name">${r.label || characters[r.characterId].name}</span>
+          ${r.guaranteedFirst ? '<span class="tag">首金必不歪</span>' : ''}
+          <label class="favor">喜好 <input type="number" data-favor="${r.characterId}" min="0" max="100" value="${r.favor}" /></label>
           <span class="verdict">${VERDICT_LABEL[r.verdict]}</span>
         </div>
         <div class="score">推荐分 ${(r.score * 100).toFixed(0)} / 100（总效用 ${r.utility.toFixed(1)}）</div>
@@ -68,6 +90,22 @@ function renderResults() {
       </div>`,
     )
     .join('');
+}
+
+function loadMyAccount() {
+  for (const id of myAccount.box) {
+    state.box.characters[id] = { owned: true, mindscape: 0 };
+    const el = document.querySelector(`[data-char="${id}"]`);
+    if (el) el.checked = true;
+  }
+  state.resources = {
+    encryptedTapes: 0,
+    polychrome: 0,
+    pity: myAccount.limited.pity,
+    fails: myAccount.limited.fails,
+  };
+  renderResources();
+  renderResults();
 }
 
 function bindEvents() {
@@ -94,6 +132,8 @@ function bindEvents() {
       renderResults();
     }
   });
+
+  $('load-my-account').addEventListener('click', loadMyAccount);
 }
 
 renderResources();
