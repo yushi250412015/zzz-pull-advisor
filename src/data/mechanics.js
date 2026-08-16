@@ -28,6 +28,9 @@ export const mechanics = {
     keySkills: ['流变（属性切换）'],
     team: '蕾米埃尔 + 维琳娜（风异常副C） + 异常增伤辅助（如简杜）',
     multipliers: null,
+    facts: [
+      '蕾米埃尔明显利好「异放」角色（爱芮/普罗米娅），旧紊乱异常C 难吃满加成（毕加 BV1hAgb6FEdt 评论区，单源）',
+    ],
     sources: [
       'https://wiki.biligame.com/zzz/蕾米埃尔（BWIKI）',
       '官方公告 ann_id 1262（流明·异常）',

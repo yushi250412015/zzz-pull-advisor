@@ -66,6 +66,9 @@ export const observations = [
   { characterId: 'chinatsu', value: 92, weight: 0.9, source: 'katya', date: '2026-02-02', note: 'BV1yPFPzKESn《妄想天使千夏综合测评：有力气的偶像！高速以太帷幕！》标题强正面；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'miyabi', value: 92, weight: 0.9, source: 'katya', date: '2024-12-15', note: 'BV1r5q9YXECT《星见雅综合测评：超强大范围输出》标题强正面；92=min(先验92+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'zhu-yuan', value: 83, weight: 0.9, source: 'katya', date: '2024-07-23', note: 'BV1tS42197rb《朱鸢综合测评：…爆发天花板以太大C》标题强正面；83=min(先验80+3,92) 我方保守映射（非视频原值）' },
+  // —— 3.1 潜能觉醒共识（毕加视频评论区多条交叉，2026-07）——
+  { characterId: 'nekomata', value: 75, weight: 0.45, source: 'bili-comments', date: '2026-07', note: 'BV1qQgt6qExv 评论区共识：3.1 加强后猫又仍是最强物理强攻（「出道即巅峰」）；75 为我方对评论语义的保守映射（非原值）' },
+  { characterId: 'rina', value: 62, weight: 0.45, source: 'bili-comments', date: '2026-07', note: 'BV1acgb6hEoa 评论区共识：3.1 潜能觉醒后丽娜成强攻队万能插件（与狼互解额外能力）；62 为我方保守映射（非原值），手感抱怨仍存在' },
   // —— 星见雅衰落冲突（两条独立评论交叉：毕加年度榜 2026-02 + 卡特亚南宫羽视频 2026-03）——
   // 「不能稳定出场/被仪玄碾压」「危局几乎期期压线过，有柚叶都解决不了」；与 2024 开服期「超模」评价冲突
   { characterId: 'miyabi', value: 70, weight: 0.45, source: 'bili-comments', date: '2026-03', note: '两条独立评论交叉：雅「越来越乏力/期期压线过」；数值 70 为我方对评论语义的保守映射（非原值），与旧占位先验 92 冲突，供 Kalman 折中' },

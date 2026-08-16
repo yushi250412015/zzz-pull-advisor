@@ -199,3 +199,13 @@
 - **落库**：observations 新增 `bili-comments` 源（trust 0.45，多条交叉才采用）+ 星见雅 70 冲突观测（后验 92 → **88.37**）；mechanics 新增琉音/星见雅条目、aria/promya/velina/nangong-yu 增补 facts；systems 注释补官方配队佐证
 - **希格莉德倍率**：BWIKI 页复查仍为「表达式错误」+ 空倍率表 → `multipliers` 保持 null（不臆造），待页面修复或视频内数值
 
+
+
+### 12.6 潜能觉醒共识 + 敏感性分析 + UI 冒烟（2026-08 v2.1）
+
+- **潜能觉醒系列消化（毕加丶，2026-07-24）**：猫又「3.1 加强后仍是最强物理强攻（出道即巅峰）」→ 观测 75；丽娜「加强后成强攻队万能插件（与狼互解额外能力）」→ 观测 62（手感抱怨仍存在）；蕾米埃尔「利好异放角色、旧紊乱C 难吃满」→ mechanics facts；卢西娅「命破队首选」（10选2 评论区）佐证 rupture 体系
+- **希格莉德倍率**：B站搜索无文本倍率表（数值只在视频内）→ `multipliers` 维持 null；搜索标题共识「数值怪/伟大数值」佐证 meta 82-85
+- **音擎/邦布敏感性分析**（`scripts/sensitivity-equipment.mjs`，账号 box + 60 抽样本）：蕾米专武结论在 weaponValueRatio 0.45→0.6 间翻转 skip→consider（默认 0.6 下为 consider，属临界稳健）；希格莉德专武全参数 skip（未拥有角色 → 价值 0 的诚实行为）；艾瑞儿邦布全参数 pull（价值 9-15 恒正）
+- **UI jsdom 冒烟测试**（+8 项，`test/ui-smoke.test.js`）：index.html + main.js 副作用导入，断言 8 个面板真实渲染（推荐卡/音擎邦布/四池欧非/官方情报/机制速查/可信度/权重初始化/MCTS 场景）
+- **SOP 演练**：update-banners 确认 3.2 未进窗口（符合预期）
+
