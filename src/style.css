@@ -130,22 +130,6 @@ h1 {
   color: #64748b;
 }
 
-.card .favor {
-  font-size: 12px;
-  color: #64748b;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.card .favor input {
-  width: 48px;
-  padding: 2px 4px;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  font-size: 12px;
-}
-
 .badge.wind { background: #0ea5e9; }
 .badge.unknown { background: #94a3b8; }
 
@@ -359,39 +343,6 @@ h1 {
 
 .mcts-scenario-result {
   margin-top: 8px;
-}
-
-.mech-card .mech-summary {
-  font-size: 13px;
-  color: #334155;
-  margin-top: 6px;
-}
-
-.mech-card .mech-skills {
-  margin-top: 6px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.mech-skill {
-  display: inline-block;
-  padding: 1px 8px;
-  border-radius: 999px;
-  background: #f1f5f9;
-  color: #475569;
-  font-size: 12px;
-}
-
-.mech-card .mech-team {
-  font-size: 12px;
-  color: #64748b;
-  margin-top: 6px;
-}
-
-.mech-wiki {
-  font-size: 12px;
-  color: #4338ca;
 }
 
 .conf-row {

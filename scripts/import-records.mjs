@@ -16,6 +16,7 @@
 import { existsSync, readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import os from 'node:os';
+import http from 'node:http';
 import { extractGachaPageUrl, fetchGachaRecords } from '../src/datasource/gacha-log.js';
 import { groupRecordsByType, summarizeAccount } from '../src/datasource/import-summary.js';
 import { standardS } from '../src/data/characters.js';
@@ -131,8 +132,63 @@ function compareWith(summary) {
   console.log(`一致 ${ok}/${checks.length}`);
 }
 
+// 本地同步服务：UI 一键同步的桥梁（浏览器因 CORS 不能直连米哈游，由本服务代抓）
+// 用法：node scripts/import-records.mjs --serve   → http://localhost:8787
+//   GET /health        → { ok: true }
+//   GET /sync?uid=xxx  → 扫描游戏日志提取 authkey → 四池拉取 → 汇总 JSON（uid 用于校验账号一致）
+// 官方没有「输入 UID 直查」的接口：抽卡记录 API 必须带游戏内生成的 authkey（约 1 天过期）。
+function startServer() {
+  const server = http.createServer(async (req, res) => {
+    const send = (code, obj) => {
+      res.writeHead(code, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-store',
+      });
+      res.end(JSON.stringify(obj));
+    };
+    try {
+      if (req.url === '/health') {
+        send(200, { ok: true });
+        return;
+      }
+      if (req.url && req.url.startsWith('/sync')) {
+        const url = new URL(req.url, 'http://localhost');
+        const expectUid = url.searchParams.get('uid') || null;
+        const pageUrl = resolvePageUrl({});
+        const records = await fetchAll(pageUrl);
+        const summary = summarizeAccount(groupRecordsByType(records), standardS);
+        const actualUid = records[0] ? String(records[0].uid) : null;
+        const snapshotPath = join('docs', 'data', 'gacha-records-' + new Date().toISOString().slice(0, 10) + '.json');
+        writeFileSync(snapshotPath, JSON.stringify({ generatedAt: new Date().toISOString(), sourceUrl: pageUrl, records }, null, 2), 'utf8');
+        send(200, {
+          ok: true,
+          uid: actualUid,
+          uidMatched: expectUid ? String(expectUid) === String(actualUid) : true,
+          recordCount: records.length,
+          generatedAt: new Date().toISOString(),
+          summary,
+          snapshot: snapshotPath,
+        });
+        return;
+      }
+      send(404, { ok: false, message: 'not found' });
+    } catch (e) {
+      send(500, { ok: false, message: e.message });
+    }
+  });
+  server.listen(8787, () => {
+    console.log('[serve] 本地同步服务已启动：http://localhost:8787（/health 健康检查，/sync?uid=xxx 同步账号）');
+    console.log('[serve] 说明：官方无 UID 直查接口；同步依赖游戏日志中的 authkey（游戏内打开一次抽卡记录页后生效，约 1 天过期）');
+  });
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.serve) {
+    startServer();
+    return;
+  }
   let records;
   let snapshotPath = null;
   if (args.records) {

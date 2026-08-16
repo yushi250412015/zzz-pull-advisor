@@ -25,7 +25,7 @@
    - **P5 不确定性/风险**：抽卡记录解析（box/保底/大保底）、欧非统计、数据源适配。
 2. **拒绝硬编码「灵魂角色」**：灵魂角色数量不定，需要可学习的抽象算法（CNN 式学习权重思想 → 落地为可学习贡献向量 θ）。
 3. **多利用已知先进的数学模型或算法**；**动手前检索网上所有可能的已有 skill 或项目**。
-4. **权重约定**：强度:喜好 = **8:2**（α_combat=0.8，α_favor=0.2），**不考虑 XP**；λ_risk / α_cost 由「版本可获取资源 + 账号欧非程度」用算法推导；判定阈值 ∈ [0,1]。
+4. **权重约定**：**纯强度推荐**——UI 层 α_favor 恒为 0（喜好不参与评分；引擎仍保留 favor 参数兼容库调用）；α_combat=0.8；λ_risk / α_cost 由「版本可获取资源 + 账号欧非程度」用算法推导；判定阈值 ∈ [0,1]。
 5. **k_op（手法上下限）与队伍角色效果「无法量化」** → 用默认值/可学习参数，不硬拍数字。
 6. **「mcts 加」**：MCTS 时序规划器，求解「现在抽 vs 攒给下版本」。
 7. 发布到用户自己的 GitHub + Pages；**同步项目进度和项目日志**。
@@ -44,12 +44,12 @@
 | P3 决策 | ✅ | 帕累托、总效用、权重推导、sigmoid 推荐分、0.6/0.4 结论 |
 | P4 时序 | ✅ | Kalman 单步/序列/置信区间、多源观测融合 |
 | P5 接线 | ✅ | 记录解析、欧非统计、推荐编排、数据源适配器（URL 提取 + 拉取）、MCTS |
-| UI | ✅ | 资源输入 + box 勾选 + 喜好分 + 「载入我的真实账号」+ 结果卡片（含自选混池「首金必不歪」标签） |
+| UI | ✅ | 资源输入 + box 勾选 + 账号同步（UID → 本地服务 → 四池刷新）+ 「载入我的真实账号」+ 结果卡片（含自选混池「首金必不歪」标签） |
 | 真实账号数据 | ✅ | 4 池 1168 条已解析入库（`my-account.js` + 本地 `docs/data/` 原始 JSON） |
 | 音擎/邦布池进 UI | ⬜ | 数据已有，UI 未接 |
 | 「从记录实时导入」全流程 | ⬜ | 只有函数级适配器，无 UI 集成（本地日志 → authkey → 四池拉取 → 解析） |
 | MCTS 接入 UI | ⬜ | `mctsPlan` 已实现并有测试，未接 UI |
-| 公告/角色机制文本数据源 | ⬜ | 已实测官方公告 API 可用，未写成模块 |
+| 角色机制速查 | 🚫 | 按用户要求已移除（2026-08 重构）：核心是抽卡决策，机制游戏内即可查看 |
 | 角色 meta 与体系先验校准 | ⬜ | 大量 `meta: null`、`contributions` 为占位先验 |
 | 六维向量真实数据 | ⬜ | `DIMENSIONS` 已定义，无角色数据填充 |
 
@@ -148,7 +148,7 @@
 ## 5. UI 现状（`index.html` + `src/main.js` + `src/style.css`）
 
 - 结构：资源面板（加密母带/菲林/保底计数（独家池）/大保底勾选）→ box 面板（39 个角色 checkbox，`badge` 显示元素，null 显示 `?`）→ 推荐结果卡片列表。
-- 数据流：`state = {resources, box.characters{id:{owned,mindscape}}, favors}`；`input` 事件实时重算（喜好分用 `change` 避免重建输入框）；`renderResults()` 展开 `banners`（含混池 3 选 1 目标与「首金必不歪」标签），每目标调 `recommendCharacter` + `verdictFromScore(scoreFromUtility(...))`。
+- 数据流：`state = {resources, box.characters{id:{owned,mindscape}}, account}`；`input` 事件实时重算（喜好已移除：favor 恒 50、α_favor 恒 0）；`renderResults()` 展开 `banners`（含混池 3 选 1 目标与「首金必不歪」标签），每目标调 `recommendCharacter` + `verdictFromScore(scoreFromUtility(...))`。
 - 「载入我的真实账号」按钮：套用 `my-account.box`（勾选 20 角色）+ 独家 pity/fails，重渲染。
 - 已知局限：仅角色池进 UI；音擎/邦布池数据未接；权重未暴露为 UI 输入；KEEP 简洁风格（无框架）。
 

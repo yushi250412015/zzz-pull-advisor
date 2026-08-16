@@ -10,7 +10,7 @@
     <div class="container">
       <header>
         <h1>ZZZ 抽卡参谋</h1>
-        <p class="sub">基于你的 box 与资源，为下版本卡池给出「抽 / 观望 / 跳过」建议（开发中）</p>
+        <p class="sub">基于你的 box 与资源，为下版本卡池给出「抽 / 观望 / 跳过」建议</p>
       </header>
 
       <section class="panel">
@@ -18,7 +18,7 @@
         <div id="resources-form"></div>
         <p class="hint">
           提示：保底 / 大保底按卡池独立计算（独家与常驻分开）。
-          <button id="load-my-account" type="button">载入我的真实账号（uid 25183553 · 2026-08-15 解析）</button>
+          <button id="load-my-account" type="button">载入我的真实账号快照（uid 25183553）</button>
         </p>
       </section>
 
@@ -28,14 +28,21 @@
       </section>
 
       <section class="panel">
-        <h2>我的真实账号 · 四池状态（uid 25183553 · 2026-08-15 解析）</h2>
+        <h2>我的真实账号 · 四池状态（UID 同步后自动刷新）</h2>
         <div id="pools-list"></div>
         <p class="hint">音擎 / 邦布池为真实抽卡记录解析结果，仅作状态参考；音擎 / 邦布的「抽卡推荐」待后续版本接入。</p>
       </section>
 
       <section class="panel">
-        <h2>从记录实时导入（本地脚本）</h2>
-        <p class="hint">浏览器无法直连米哈游抽卡接口（CORS 限制），抓取与解析由本地 Node 脚本完成：上传日志提取 authkey（或直接粘贴页面 URL）→ 四池拉取 → 生成与「载入我的真实账号」一致的状态快照。</p>
+        <h2>账号同步（UID 一键同步 box / 保底 / 欧非）</h2>
+        <p class="hint">官方没有「输入 UID 直查」接口：抽卡记录必须带游戏内生成的 authkey。本工具用本地服务代抓——先运行 <code>node scripts/import-records.mjs --serve</code>（监听 localhost:8787），再在下方输入游戏内 UID 点「同步账号」。UID 仅用于校验同步结果是否为你本人账号。</p>
+        <div class="import-row">
+          <input type="text" id="sync-uid" placeholder="游戏内 UID（用于校验同步结果）" />
+          <button id="sync-btn" type="button">同步账号</button>
+        </div>
+        <p class="hint" id="sync-status"></p>
+        <hr />
+        <p class="hint">备用方案（不用本地服务时）：上传日志提取含 authkey 的页面 URL，再执行本地脚本抓取。</p>
         <label class="import-file">上传日志文件（Player.log / NAP_*.log）
           <input type="file" id="import-log-file" accept=".log,.txt" />
         </label>
@@ -65,12 +72,6 @@
       </section>
 
       <section class="panel">
-        <h2>角色机制速查</h2>
-        <div id="mechanics-panel"></div>
-        <p class="hint">机制摘要为官方公告 / BWIKI / 权威博主口径（来源逐条标注）；全量技能倍率表见各角色 BWIKI 页链接。无可靠来源不收录、不给具体倍率数值（不臆造）。</p>
-      </section>
-
-      <section class="panel">
         <h2>强度可信度（Kalman 多源后验）</h2>
         <div id="meta-confidence"></div>
         <p class="hint">先验 = 当前 meta；后验 = 按观测源可信度加权融合（Prydwen 0.8 / 权威博主 0.6 / 卡特亚 0.9——其视频文本当前网络受限待补入，通道已就绪）。冲突观测（派派/丽娜/露西等）自动折中并给出 95% 置信区间。</p>
@@ -80,7 +81,6 @@
         <h2>决策权重（可调）</h2>
         <div class="weights-grid">
           <label>强度 α_c <input type="number" id="w-combat" min="0" max="1" step="0.05" /></label>
-          <label>喜好 α_f <input type="number" id="w-favor" min="0" max="1" step="0.05" /></label>
           <label>风险 λ_risk <input type="number" id="w-risk" min="0" step="5" /></label>
           <label>成本 α_cost <input type="number" id="w-cost" min="0" step="0.005" /></label>
           <label>「抽」阈值 <input type="number" id="t-pull" min="0" max="1" step="0.05" /></label>
@@ -90,7 +90,7 @@
           <label><input type="checkbox" id="w-auto" checked /> λ_risk / α_cost 自动推导</label>
           <button id="reset-weights" type="button">恢复默认</button>
         </div>
-        <p class="hint">约定：强度:喜好 = 8:2（不考虑 XP）。自动模式按「3.1 零氪 140 抽 + 你的账号平均 80.4 抽/S（偏非）」推导 λ_risk ≈ 38.9、α_cost ≈ 0.143；任何手动改动即切为手动模式，改动失焦后即时生效。</p>
+        <p class="hint">本工具纯按强度推荐：喜好不参与评分（α_f 恒为 0）。自动模式按「3.1 零氪 140 抽 + 你的账号平均 80.4 抽/S（偏非）」推导 λ_risk ≈ 38.9、α_cost ≈ 0.143；任何手动改动即切为手动模式，改动失焦后即时生效。</p>
       </section>
 
       <section class="panel">

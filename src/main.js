@@ -13,7 +13,6 @@ import { buildPullStrategies } from './core/decision/pull-strategies.js';
 import { buildPlanningScenarios } from './core/decision/planning.js';
 import { weapons, bangboos } from './data/equipment.js';
 import { officialFacts } from './data/official-facts.js';
-import { mechanics } from './data/mechanics.js';
 import { buildWikiUrl } from './datasource/announcement.js';
 import { recommendCharacter } from './core/recommend.js';
 import { verdictFromScore, scoreFromUtility, deriveWeights, VERSION_RESOURCES } from './core/decision/decision.js';
@@ -27,27 +26,26 @@ const DEFAULT_FAVOR = 50;
 const state = {
   resources: { encryptedTapes: 0, polychrome: 0, pity: 0, fails: 0 },
   box: { characters: {} },
-  favors: {},
+  account: myAccount, // 四池 / box 数据源（初始 08-15 快照，UID 同步后刷新）
   weights: null, // 手动权重；null 时按自动模式推导
   thresholds: { pull: 0.6, consider: 0.4 },
   autoWeights: true,
 };
 
-/** 当前生效权重：自动模式按「版本资源 + 账号欧非」推导，否则用手动值 */
+/** 当前生效权重：自动模式按「版本资源 + 账号欧非」推导，否则用手动值；喜好权重恒为 0（纯强度推荐） */
 function currentWeights() {
-  if (state.autoWeights) {
-    return deriveWeights({
-      versionResources: VERSION_RESOURCES,
-      avgPity: myAccount.luck.avgPullsPerAgentS, // 80.4 抽/S，偏非 → λ_risk 上调
-    });
-  }
-  return state.weights;
+  const w = state.autoWeights
+    ? deriveWeights({
+        versionResources: VERSION_RESOURCES,
+        avgPity: state.account.luck.avgPullsPerAgentS, // 80.4 抽/S，偏非 → λ_risk 上调
+      })
+    : state.weights;
+  return { ...w, alphaFavor: 0 };
 }
 
 function renderWeights() {
   const w = currentWeights();
   $('w-combat').value = w.alphaCombat;
-  $('w-favor').value = w.alphaFavor;
   $('w-risk').value = Math.round(w.lambdaRisk * 100) / 100;
   $('w-cost').value = Math.round(w.alphaCost * 1000) / 1000;
   $('t-pull').value = state.thresholds.pull;
@@ -99,7 +97,7 @@ function renderResults() {
       ? { ...DEFAULT_CONFIG.character, rateUpChance: 1 }
       : DEFAULT_CONFIG.character;
     for (const t of targets) {
-      const favor = state.favors[t.id] ?? DEFAULT_FAVOR;
+      const favor = DEFAULT_FAVOR; // 纯强度推荐：喜好恒为中性
       const r = recommendCharacter({
         box: state.box,
         resources: state.resources,
@@ -146,7 +144,6 @@ function renderResults() {
         <div class="head">
           <span class="name">${r.label || characters[r.characterId].name}</span>
           ${r.guaranteedFirst ? '<span class="tag">首金必不歪</span>' : ''}
-          <label class="favor">喜好 <input type="number" data-favor="${r.characterId}" min="0" max="100" value="${r.favor}" /></label>
           ${r.owned ? '<span class="verdict">已拥有</span>' : `<span class="verdict">${VERDICT_LABEL[r.verdict]}</span>`}
         </div>
         <div class="score">推荐分 ${(r.score * 100).toFixed(0)} / 100（总效用 ${r.utility.toFixed(1)}）</div>
@@ -165,7 +162,7 @@ function renderResults() {
 }
 
 function loadMyAccount() {
-  for (const id of myAccount.box) {
+  for (const id of state.account.box) {
     state.box.characters[id] = { owned: true, mindscape: 0 };
     const el = document.querySelector(`[data-char="${id}"]`);
     if (el) el.checked = true;
@@ -173,14 +170,14 @@ function loadMyAccount() {
   state.resources = {
     encryptedTapes: 0,
     polychrome: 0,
-    pity: myAccount.limited.pity,
-    fails: myAccount.limited.fails,
+    pity: state.account.limited.pity,
+    fails: state.account.limited.fails,
   };
   renderResources();
   renderResults();
 }
 
-// —— 我的真实账号 · 四池状态（2026-08-15 解析，参考信息） ——
+// —— 我的真实账号 · 四池状态（初始 2026-08-15 快照；UID 同步后自动刷新） ——
 function renderPools() {
   const pools = [
     { label: '独家角色池', key: 'limited' },
@@ -190,7 +187,7 @@ function renderPools() {
   ];
   $('pools-list').innerHTML = pools
     .map(({ label, key }) => {
-      const p = myAccount[key];
+      const p = state.account[key];
       const sList = (p.sList || [])
         .map((s) => `${s.name}${s.count ? `×${s.count}` : ''}${s.date ? `（${s.date}）` : ''}${s.lost ? '（歪）' : ''}`)
         .join('、');
@@ -207,8 +204,8 @@ function renderPools() {
       </div>`;
     })
     .join('') +
-    '<p class="hint">欧非（全账号）：代理人池平均 ' + myAccount.luck.avgPullsPerAgentS +
-    ' 抽/S（期望 62.5 → 偏非）· 独家池胜率 ' + Math.round(myAccount.luck.limitedWinRate * 100) + '% · 全账号 ' + myAccount.luck.totalPulls + ' 抽</p>';
+    '<p class="hint">欧非（全账号）：代理人池平均 ' + state.account.luck.avgPullsPerAgentS +
+    ' 抽/S（期望 62.5 → 偏非）· 独家池胜率 ' + Math.round(state.account.luck.limitedWinRate * 100) + '% · 全账号 ' + state.account.luck.totalPulls + ' 抽 · UID ' + (state.account.uid || '—') + ' · 解析 ' + (state.account.analyzedAt || '—') + '</p>';
 }
 
 // —— 官方情报（3.1 公告快照，静态数据避免浏览器 CORS） ——
@@ -259,33 +256,6 @@ function renderMetaConfidence() {
   $('meta-confidence').innerHTML = rows;
 }
 
-// —— 角色机制速查（mechanics.js，官方/BWIKI/博主口径摘要；全量倍率表走 wiki 链接） ——
-function renderMechanics() {
-  const cards = Object.values(mechanics)
-    .map((m) => {
-      const c = characters[m.characterId];
-      const skills = m.keySkills.map((s) => '<span class="mech-skill">' + s + '</span>').join('');
-      const sources = m.sources
-        .map((s) => {
-          const urlMatch = s.match(/^(https?:\/\/[^\s（]+)/);
-          return urlMatch ? '<a href="' + urlMatch[1] + '" target="_blank" rel="noopener">' + s.replace(/^https?:\/\/[^\s（]+/, '来源') + '</a>' : s;
-        })
-        .join(' · ');
-      return (
-        '<div class="card mech-card">' +
-        '<div class="head"><span class="name">' + c.name + '（' + c.rarity + '·' + (ELEMENT_LABEL[c.element] || '?') + '·' + (ROLE_LABEL[c.role] || '?') + '）</span>' +
-        '<a class="mech-wiki" href="' + buildWikiUrl(c.name) + '" target="_blank" rel="noopener">倍率表 → wiki</a></div>' +
-        '<div class="mech-summary">' + m.summary + '</div>' +
-        '<div class="mech-skills">' + skills + '</div>' +
-        (m.team ? '<div class="mech-team">推荐配队：' + m.team + '</div>' : '') +
-        '<div class="hint">' + sources + '</div>' +
-        '</div>'
-      );
-    })
-    .join('');
-  $('mechanics-panel').innerHTML = cards;
-}
-
 // —— 从记录实时导入：上传日志 → 提取抽卡 H5 页面 URL（抓取仍需本地脚本，浏览器直连会被 CORS 拦截） ——
 function bindImportPanel() {
   const fileInput = $('import-log-file');
@@ -299,7 +269,7 @@ function bindImportPanel() {
     urlBox.value = url || '';
     if (url) {
       const gt = extractGachaType(url);
-      status.textContent = `已提取页面 URL（gacha_type=${gt || '未知'}，authkey 已含在其中）。复制后执行下方本地脚本命令即可。`;
+      status.textContent = `已提取页面 URL（gacha_type=${gt || '未知'}，authkey 已含在其中）。复制后执行 node scripts/import-records.mjs --url，或在上方用 UID 一键同步（需先启动本地服务）。`;
     } else {
       status.textContent = '未在该文件中找到抽卡 H5 页面 URL。请先在游戏内打开一次抽卡记录页（生成含 authkey 的 URL），再上传 Player.log / NAP_*.log。';
     }
@@ -317,6 +287,86 @@ function bindImportPanel() {
   });
 }
 
+// —— 账号同步：输入 UID → 本地服务抓取四池记录 → 刷新 box / 保底 / 欧非 ——
+// 官方没有「输入 UID 直查」接口：抽卡记录 API 必须带游戏日志中的 authkey（约 1 天过期）。
+// 启动本地服务：node scripts/import-records.mjs --serve（http://localhost:8787）
+const SYNC_ENDPOINT = 'http://localhost:8787';
+
+function renderSyncPanel() {
+  $('sync-status').innerHTML =
+    '尚未同步。输入游戏内 UID 后点击「同步账号」；若提示失败，请先运行 <code>node scripts/import-records.mjs --serve</code>。';
+}
+
+function applyAccountSummary(summary, uid) {
+  const pools = summary.pools || {};
+  const mapPool = (key) => {
+    const p = pools[key] || { pulls: 0, pity: 0, fails: 0, sCount: 0, sList: [] };
+    const sList = (p.sList || []).map((s) => ({ name: s.name, date: s.time || s.date || null, lost: !!s.lost, count: s.count || 1 }));
+    return {
+      pulls: p.pulls || 0,
+      pity: p.pity || 0,
+      fails: p.fails || 0,
+      sCount: p.sCount || 0,
+      sList,
+      lastS: sList.length ? { name: sList[sList.length - 1].name } : null,
+    };
+  };
+  const luck = summary.luck || {};
+  state.account = {
+    uid: uid || state.account.uid,
+    analyzedAt: new Date().toISOString().slice(0, 10),
+    box: summary.box || [],
+    limited: mapPool('limited'),
+    standard: mapPool('standard'),
+    weapon: mapPool('weapon'),
+    bangboo: mapPool('bangboo'),
+    luck: {
+      totalPulls: luck.totalPulls || 0,
+      agentPulls: luck.agentPulls || 0,
+      agentSCount: luck.agentSCount || 0,
+      avgPullsPerAgentS: luck.avgPullsPerAgentS || 0,
+      limitedWinRate: luck.limitedWinRate || 0,
+    },
+  };
+  // 同步 box → 勾选；独家池保底 → 资源表单；再整体重算
+  state.box.characters = {};
+  for (const id of state.account.box) state.box.characters[id] = { owned: true, mindscape: 0 };
+  for (const el of document.querySelectorAll('[data-char]')) {
+    el.checked = !!state.box.characters[el.dataset.char];
+  }
+  state.resources.pity = state.account.limited.pity || 0;
+  state.resources.fails = state.account.limited.fails >= 1 ? 1 : 0;
+  renderResources();
+  renderPools();
+  renderResults();
+  renderEquipmentResults();
+  renderWeights();
+}
+
+async function syncAccount() {
+  const uid = ($('sync-uid').value || '').trim();
+  const status = $('sync-status');
+  if (!uid) {
+    status.innerHTML = '<span class="verdict verdict-skip">请先输入游戏内 UID（用于校验同步的是不是你的账号）。</span>';
+    return;
+  }
+  status.innerHTML = '正在连接本地服务并抓取四池记录……（首次约需数秒）';
+  try {
+    const res = await fetch(SYNC_ENDPOINT + '/sync?uid=' + encodeURIComponent(uid));
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data || !data.ok) throw new Error((data && data.message) || '服务返回异常');
+    if (!data.uidMatched) {
+      status.innerHTML = '<span class="verdict verdict-skip">UID 不一致</span>：日志账号 ' + data.uid + ' ≠ 输入 ' + uid + '。请确认当前登录的账号。';
+      return;
+    }
+    applyAccountSummary(data.summary, data.uid);
+    status.innerHTML = '<span class="verdict verdict-pull">同步成功</span> UID ' + data.uid + ' · 四池共 ' + data.recordCount +
+      ' 条记录 · ' + new Date(data.generatedAt).toLocaleString() + '。box / 保底 / 欧非已刷新，全部推荐已按最新状态重算。';
+  } catch (e) {
+    status.innerHTML = '<span class="verdict verdict-skip">同步失败：' + e.message + '</span> 请确认已运行 <code>node scripts/import-records.mjs --serve</code>，且游戏内最近打开过抽卡记录页（authkey 约 1 天过期）。';
+  }
+}
+
 // —— 音擎 / 邦布推荐结果 ——
 function renderEquipmentResults() {
   const cards = [];
@@ -326,10 +376,10 @@ function renderEquipmentResults() {
     const equipment = isWeapon ? weapons[banner.weaponId] : bangboos[banner.bangbooId];
     if (!equipment) continue;
     const ownedNames = isWeapon
-      ? (myAccount.weapon.sList || []).map((s) => s.name)
-      : (myAccount.bangboo.sList || []).map((s) => s.name);
+      ? (state.account.weapon.sList || []).map((s) => s.name)
+      : (state.account.bangboo.sList || []).map((s) => s.name);
     const owned = ownedNames.includes(equipment.name);
-    const favor = isWeapon ? (state.favors[equipment.ownerId] ?? DEFAULT_FAVOR) : DEFAULT_FAVOR;
+    const favor = DEFAULT_FAVOR; // 纯强度推荐：喜好恒为中性
     const r = recommendEquipment({
       kind: banner.type,
       equipment,
@@ -340,7 +390,7 @@ function renderEquipmentResults() {
       favor,
       weights: currentWeights(),
       owned,
-      poolState: isWeapon ? { pity: myAccount.weapon.pity, fails: 0 } : { pity: myAccount.bangboo.pity, fails: 0 },
+      poolState: isWeapon ? { pity: state.account.weapon.pity, fails: 0 } : { pity: state.account.bangboo.pity, fails: 0 },
     });
     const score = scoreFromUtility(r.utility);
     const verdict = owned ? null : verdictFromScore(score, state.thresholds);
@@ -432,7 +482,7 @@ function runScenario(id) {
   target.innerHTML = `
     <div class="mcts-summary">${conclusion}</div>
     ${rows}
-    <p class="hint">MCTS 只优化「box 成型收益」（当前体系先验）；喜好分与空手风险未计入。结果随随机模拟波动，资源变动后需重新运行。预算单位：加密母带 + 菲林 ÷ 160。</p>`;
+    <p class="hint">MCTS 只优化「box 成型收益」（当前体系先验）；空手风险未计入。结果随随机模拟波动，资源变动后需重新运行。预算单位：加密母带 + 菲林 ÷ 160。</p>`;
 }
 
 function bindEvents() {
@@ -452,15 +502,11 @@ function bindEvents() {
     }
   });
 
-  // 喜好分用 change（失焦才重算），避免输入过程中重建输入框
-  document.addEventListener('change', (event) => {
-    if (event.target.dataset.favor) {
-      state.favors[event.target.dataset.favor] = Number(event.target.value);
-      renderResults();
-    }
-  });
-
   $('load-my-account').addEventListener('click', loadMyAccount);
+  $('sync-btn').addEventListener('click', syncAccount);
+  $('sync-uid').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') syncAccount();
+  });
   bindImportPanel();
 
   // MCTS 场景运行按钮（场景由卡池数据动态生成，用事件委托）
@@ -473,13 +519,12 @@ function bindEvents() {
   // 权重面板：改动（失焦）即时生效；任何手动改动切换为手动模式
   document.addEventListener('change', (event) => {
     const id = event.target.id;
-    if (['w-combat', 'w-favor', 'w-risk', 'w-cost'].includes(id)) {
+    if (['w-combat', 'w-risk', 'w-cost'].includes(id)) {
       if (state.autoWeights) {
         state.autoWeights = false;
         state.weights = { ...currentWeights() };
       }
       if (id === 'w-combat') state.weights.alphaCombat = Number(event.target.value) || 0;
-      if (id === 'w-favor') state.weights.alphaFavor = Number(event.target.value) || 0;
       if (id === 'w-risk') state.weights.lambdaRisk = Number(event.target.value) || 0;
       if (id === 'w-cost') state.weights.alphaCost = Number(event.target.value) || 0;
       renderWeights();
@@ -510,7 +555,7 @@ renderPools();
 renderResults();
 renderEquipmentResults();
 renderOfficialFacts();
-renderMechanics();
+renderSyncPanel();
 renderMetaConfidence();
 renderWeights();
 renderMctsScenarios();

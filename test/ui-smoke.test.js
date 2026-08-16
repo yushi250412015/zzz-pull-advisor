@@ -41,10 +41,10 @@ describe('UI 冒烟（jsdom 渲染）', () => {
     expect(el.innerHTML).toContain('公告正文提及角色');
   });
 
-  it('角色机制速查渲染关键条目', () => {
-    const el = document.getElementById('mechanics-panel');
-    expect(el.innerHTML).toContain('希格莉德');
-    expect(el.innerHTML).toContain('倍率表');
+  it('账号同步面板渲染（UID 输入 + 同步按钮 + 本地服务提示）', () => {
+    expect(document.getElementById('sync-uid')).not.toBeNull();
+    expect(document.getElementById('sync-btn')).not.toBeNull();
+    expect(document.getElementById('sync-status').innerHTML).toContain('--serve');
   });
 
   it('强度可信度面板渲染后验', () => {
@@ -54,6 +54,7 @@ describe('UI 冒烟（jsdom 渲染）', () => {
   it('权重面板初始化（自动模式）', () => {
     expect(document.getElementById('w-auto').checked).toBe(true);
     expect(document.getElementById('w-combat').value).toBe('0.8');
+    expect(document.getElementById('w-favor')).toBeNull(); // 喜好权重已移除：纯强度推荐
   });
 
   it('MCTS 场景由卡池自动生成（含运行按钮）', () => {
