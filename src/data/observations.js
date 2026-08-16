@@ -81,4 +81,11 @@ export const observations = [
   // —— 爱芮观测（2026-02/03 视频，两源交叉）——
   { characterId: 'aria', value: 92, weight: 0.9, source: 'katya', date: '2026-02-27', note: 'BV1opAmzXEoD《爱芮综合测评：屁股有劲！》标题强正面；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'aria', value: 92, weight: 0.7, source: 'mengxuan', date: '2026-03-04', note: 'BV1URPNzREDf《爱芮终极指南：以太异常主C的荣耀》标题强正面，并确认「以太异常主C」定位（与项目数据一致）；92 为我方保守映射（非视频原值）' },
+  // —— 毕加年度T0榜（BV1GUZ1B8E8L，2026-02 新年盘点，标题级结论）——
+  // 标题《年度T0榜单》列全年 T0：叶瞬光/仪玄/星见雅/妮可/莱卡恩/琉音；叶瞬光/仪玄 未录入角色库（不臆造）；
+  // 库内 4 位按「标题级强正面」保守映射 min(共识 meta+3, 92)，note 注明「我方映射，非视频原值」（详见 data-sources.md §12.9）
+  { characterId: 'miyabi', value: 91, weight: 0.85, source: 'bijia', date: '2026-02', note: 'BV1GUZ1B8E8L 年度T0榜「全年T0」标题级结论；91=min(共识88+3,92) 我方保守映射（非视频原值）；与 2026-03 衰落评论（70）为不同时点观测，供 Kalman 折中' },
+  { characterId: 'nicole', value: 85, weight: 0.85, source: 'bijia', date: '2026-02', note: 'BV1GUZ1B8E8L 年度T0榜标题级结论；85=min(共识82+3,92) 我方保守映射（非视频原值）' },
+  { characterId: 'lycaon', value: 75, weight: 0.85, source: 'bijia', date: '2026-02', note: 'BV1GUZ1B8E8L 年度T0榜标题级结论；75=min(共识72+3,92) 我方保守映射（非视频原值）' },
+  { characterId: 'rinna', value: 92, weight: 0.85, source: 'bijia', date: '2026-02', note: 'BV1GUZ1B8E8L 年度T0榜标题级结论；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
 ];

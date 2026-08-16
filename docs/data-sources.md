@@ -187,7 +187,7 @@
 - **仍受限（如实记录）**：AI 视频总结（conclusion/get）需 UP 主权限 → -403；**AI 字幕服务当前返回错配内容**（BV1kRgw6zEWM 等返回无关视频字幕，ai_status=2）→ 暂不可信，不采用
 - **技术边界备忘**：本机 cookie 为 v20 app-bound 加密，直接读库需 elevation 服务（命名管道，本执行环境受限）；免登录可用接口为 view/player/tags/archive-related（此前已利用）
 - **已落地事实（本轮）**：希格莉德专武与下位差距 20%+、弹刀触发最高倍率第三段枪势、测试服削过大招倍率、0命「低命战神」——全部入 `equipment.js` note 与 `characters.js` note（单源标注；机制速查功能已移除，相关事实保留在装备/角色数据中）
-- **毕加丶视频库已拉取**（`space 25978510`）：蕾米埃尔最佳配装 BV19X3r6ME7A、猫又/丽娜/简潜能觉醒系列、爱芮最佳配装 BV1f9PKz5EHC、南宫羽最佳配装 BV1MhQqBEE4Q、年度T0榜单 BV1GUZ1B8E8L 等——待逐条取结论后补观测
+- **毕加丶视频库已拉取**（`space 25978510`）：蕾米埃尔最佳配装 BV19X3r6ME7A、猫又/丽娜/简潜能觉醒系列、爱芮最佳配装 BV1f9PKz5EHC、南宫羽最佳配装 BV1MhQqBEE4Q、年度T0榜单 BV1GUZ1B8E8L 等——年度T0榜已消化见 §12.9（4 条观测落库）
 
 
 
@@ -227,4 +227,47 @@
 - **艾莲 85 / 朱鸢 80**：历史先验校准值，note 注明「无衰减信号/待现行观测微调」
 - **不变量单测**：`test/characters-data.test.js`——31/31 meta 非 null 且值域合法、全员 note 含依据
 - 至此数据完备度：meta 31/31、enName 31/31、机制速查 31/31、观测 39 条、Kalman 后验全员接入引擎
+
+### 12.9 年度 T0 榜消化（2026-08，毕加丶 BV1GUZ1B8E8L）
+
+- **视频**：《【绝区零年度T0榜单】回顾全年最强配队！哪些角色爽足一年？叶瞬光/仪玄/星见雅/妮可/莱卡恩/琉音等》（毕加丶，pubdate 2026-02-17 新年盘点；title+desc 经 B站 view API 实测读取）
+- **结论（标题级）**：全年 T0 六角色 = 叶瞬光/仪玄/星见雅/妮可/莱卡恩/琉音；其中 **叶瞬光、仪玄 未录入角色库**（不臆造，留待补角色库后追加观测）
+- **落库（库内 4 位，按「标题级强正面」保守映射 min(共识 meta+3, 92)，note 注明「我方映射，非视频原值」）**：星见雅 91（与 2026-03 衰落评论 70 为不同时点观测，供 Kalman 折中）、妮可 85、莱卡恩 75、琉音 92——`observations.js` 新增 4 条 bijia 观测（trust 0.85，date 2026-02）
+- **说明**：年度 T0 为 2025 全年回顾（历史口径），与现行 meta 的时点差异由观测日期标注、Kalman 融合折中；当前实现按数组顺序融合、无显式时间衰减（`meta-posterior.js` Q=4 版本漂移已隐含）
+
+## 13. 希格莉德倍率补全（2026-08，GachaBase 测试服 datamined）
+
+> v2.1 任务①落地。此前 BWIKI 统计表「表达式错误」+ B站无文本倍率表 → `multipliers` 维持 null（§12.5/§12.6）。本轮新增三个英文源核验：
+
+- ✅ **GachaBase**：`https://zzz.gachabase.net/agents/1591/sigrid/beta`（beta = 创作体验服/测试服分支，2026-08 抓取，SvelteKit `__data.json` datamined）。字段 `damage_multiplier_base/step`、`daze_multiplier_base/step`。**单位换算：原始定点数 ÷ 100 = %ATK**（如 7700 = 77.0%）；`step` = 每级增量，技能 N 级倍率 = base + step×(N−1)。（换算依据：普攻第 1 段 77.0%、第 4 段 221.0% 与 ZZZ 普攻量级一致）
+- ⚠️ **Honey Hunter World**：`https://zzz.honeyhunterworld.com/1591-char/?lang=EN` 存在希格莉德页（web_search 可见），但 2026-08 多次抓取均为 Cloudflare **521（origin down）**，待恢复后交叉复核。
+- ⚠️ **Icy Veins**：`https://www.icy-veins.com/zenless-zone-zero/sigrid-profile-skills-mindscapes` 等页存在（web_search 可见），但 **403 反爬**拒绝常规 UA，正文未能读取。
+
+**数据性质声明**：GachaBase 当前为 **beta（创作体验服）分支**，希格莉德 2026-08-19 实装前数值可能调整（社区单源说法「测试服削过大招倍率」见 §12.4）；下表为 datamined beta 快照，**实装后须复核**。机制速查功能已移除（v3 重构），本表仅作资料存档，不进算法/UI。
+
+**倍率表（技能等级 1 基准 base + 每级增量 step，单位 %ATK）**：
+
+| 技能（GachaBase EN 名） | 段/形态 | DMG base | DMG step | Daze base | Daze step |
+|---|---|---|---|---|---|
+| Basic Attack: Frost-Tipped Spear（普攻四连斩） | 第 1 段 | 77.0 | 7.0 | 45.4 | 2.1 |
+| 同上 | 第 2 段 | 143.8 | 13.1 | 88.7 | 4.1 |
+| 同上 | 第 3 段 | 101.4 | 9.3 | 55.8 | 2.6 |
+| 同上 | 第 4 段 | 221.0 | 20.1 | 138.5 | 6.3 |
+| Basic Attack: Converging Spear（敛枪式·三段蓄力） | 第 1 段 | 358.3 | 32.6 | 86.3 | 4.0 |
+| 同上 | 第 2 段 | 609.1 | 55.4 | 143.1 | 6.6 |
+| 同上 | 第 3 段 | 814.6 | 74.1 | 196.2 | 9.0 |
+| Dash Attack: Windchase（闪避攻击） | — | 119.0 | 10.9 | 46.8 | 2.2 |
+| Dodge Counter: Counterthrust（闪避反击） | — | 243.1 | 22.1 | 172.3 | 7.9 |
+| Quick Assist: Iron Sentinel（快速支援） | — | 39.7 | 3.7 | 31.2 | 1.5 |
+| Assist Follow-Up: Devouring Frost（支援突击） | — | 514.9 | 46.9 | 353.8 | 16.1 |
+| Defensive Assist: Dauntless Cold（极限支援·防御） | 轻防御 Daze | — | — | 271.3 | 12.4 |
+| 同上 | 重防御 Daze | — | — | 342.8 | 15.6 |
+| 同上 | 连携防御 Daze | — | — | 166.8 | 7.6 |
+| Special Attack: Frostflower（特殊技） | — | 53.7 | 4.9 | 42.2 | 2.0 |
+| EX Special: Scattered Jade（强化特殊技·非专注态） | — | 438.8 | 39.9 | 274.3 | 12.5 |
+| EX Special: Shattered Jade（强化特殊技·骑士专注态） | — | 1047.8 | 95.3 | 362.6 | 16.5 |
+| Chain Attack: Encroaching Ice（连携技） | — | 943.7 | 85.8 | 137.6 | 6.3 |
+| Ultimate: Frozen Heavens（终结技） | — | **2189.8** | 199.1 | 265.8 | 12.1 |
+
+**关键机制映射（与 characters.js note 对齐）**：【骑士专注】= Term:1000030 状态（开启后解锁敛枪式三段蓄力、EX「碎玉」专注形态）；普攻第 4 段与连携/终结/闪避反击视为「枪势」攻击（Term:1000029）；强化特殊技双形态（Scattered Jade 非专注 / Shattered Jade 专注）；敛枪式蓄力可举盾格挡（成功格挡免伤 + 下段 Daze ×2 + 状态刷新 + 追加一次敛枪式使用次数）。**以上为 GachaBase EN 数据源，中文术语沿用既有已入档口径（骑士专注/敛枪式/三段蓄力），未臆造新译名。**
 

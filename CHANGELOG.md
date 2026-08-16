@@ -6,6 +6,11 @@
 
 ### 新增
 
+- **【v2.1 续·希格莉德倍率补全（任务①）】**：三个新英文源核验——**GachaBase**（zzz.gachabase.net/agents/1591/sigrid/beta，测试服/创作体验服 datamined，SvelteKit __data.json 解析）完整倍率表补全 19 项（普攻四连斩 77.0~221.0%、敛枪式三段 358.3~814.6%、闪避攻击/闪避反击、快速支援+支援突击、防御三形态 Daze、特殊技/强化特殊技双形态 53.7/438.8/1047.8%、连携 943.7%、终结技 2189.8%——均为 base+step×N 定点数 ÷100 换算，逐项出处与换算依据见 data-sources.md §13）；Honey Hunter World 521（origin down）、Icy Veins 403（反爬）如实记录待复核；**beta 数据实装 08-19 前须复核**；机制速查已移除故仅存档、不进算法/UI；characters.js sigrid note 补指针
+- **【v2.1 续·年度 T0 榜消化（任务②）】**：毕加丶《年度T0榜单》BV1GUZ1B8E8L（2026-02-17 新年盘点，title+desc 实测读取）标题级结论「全年 T0 = 叶瞬光/仪玄/星见雅/妮可/莱卡恩/琉音」；叶瞬光/仪玄 未录入角色库不臆造；库内 4 位按「标题级强正面」保守映射落库 4 条 bijia 观测（星见雅 91 与 03 月衰落评论 70 为不同时点供 Kalman 折中、妮可 85、莱卡恩 75、琉音 92）；data-sources.md §12.9
+- **【v2.1 续·移动端适配（任务③，低优先级）】**：560px 断点增强——权重/MCTS 控制条 flex-wrap、MCTS 行纵向堆叠、输入框 16px 防 iOS 聚焦自动缩放
+- **【v2.1 续·3.2 SOP 演练（任务④）】**：update-banners.mjs 复跑确认「窗口内无新版本」（3.1 至 09/09），3.2 未进窗口符合预期
+- 测试 160 项（本轮为数据/文档/CSS 变更：观测 +4 按 OCP 只加数据不改代码，后验数值变化无任何断言受影响；无核心逻辑语义变更）
 - **【架构重构 v3·SOLID 全项目落实】**：先定核心（抽卡决策：同步卡池+box → 纯强度「抽/观望/跳过」+风险+理由，详见 `docs/ARCHITECTURE.md` §0），再按七原则重构：①**SRP**：main.js 547 行 → ~50 行组装根；拆出 `ui/state`（状态+访问器）、`ui/render/{account,results,info}`（单面板渲染）、`ui/controller`（事件编排）、`datasource/sync-server`（HTTP 管道）；②**DIP**：新增核心门面 `core/advisor.js`（UI 只依赖稳定契约）；sync-client 注入 fetchImpl、sync-server 注入 performSync、mctsPlan 注入 valueFn；③**ISP**：advisor 细粒度方法，各面板只取所需；④**LSP**：新增 `test/lsp-contract.test.js` 固化推荐/池配置契约同形；⑤**LoD**：`getPool/getAccountLuck/getBudgetPulls` 访问器防深链；⑥**OCP**：新角色/卡池/观测源只加数据不改代码，换算法实现不动 UI；⑦**高内聚低耦合**：依赖单向无环，core 不依赖 DOM/fetch（Node 可直测）。新增架构测试 21 项（advisor 5 / state 6 / sync-client 4 / sync-server 3 / lsp-contract 3），UI jsdom 冒烟证明重构零回归
 - 测试 160 项（+21 架构）
 

@@ -444,4 +444,10 @@ button:active { transform: translateY(1px); }
   .import-row { flex-direction: column; }
   .import-row .primary-btn { width: 100%; }
   .weights-grid { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); }
+  /* 移动端增强（2026-08）：控制条换行、MCTS 行纵向堆叠、输入 16px 防 iOS 聚焦自动缩放 */
+  .weights-controls { flex-wrap: wrap; gap: 10px; }
+  .mcts-controls { flex-wrap: wrap; }
+  .mcts-scenario-head { flex-wrap: wrap; }
+  .mcts-row { flex-direction: column; align-items: flex-start; }
+  input[type='number'], input[type='text'], textarea { font-size: 16px; }
 }
