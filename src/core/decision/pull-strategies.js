@@ -2,6 +2,7 @@
 // 目标向量 objectives = [总效用↑, −空手风险↑（即风险↓）, −机会成本↑（即成本↓）]，越大越好
 
 import { probabilityOfRateUp } from '../gacha/pity.js';
+import { expectedSpentPulls } from '../gacha/downside.js';
 import { marginalUtility } from '../utility/utility.js';
 import { totalUtility, opportunityCost } from './decision.js';
 import { paretoFrontier } from './pareto.js';
@@ -17,7 +18,7 @@ export function buildPullStrategies({ box, resources, characterId, systems, bann
   const strategies = budgets.map((pulls) => {
     const risk = 1 - probabilityOfRateUp(pulls, bannerCfg, { pity: resources.pity || 0, fails: resources.fails || 0 });
     const combatDelta = marginalUtility(box, characterId, systems);
-    const cost = opportunityCost(pulls);
+    const cost = opportunityCost(expectedSpentPulls(pulls, bannerCfg, { pity: resources.pity || 0, fails: resources.fails || 0 }));
     const utility = totalUtility({ combatDelta, favor, risk, opportunityCost: cost, weights });
     return { pulls, risk, combatDelta, cost, utility, objectives: [utility, -risk, -cost] };
   });

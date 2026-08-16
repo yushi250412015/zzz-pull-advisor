@@ -18,6 +18,21 @@ export function pullCostDistribution(cfg, state = { pity: 0, fails: 0 }, maxN = 
 }
 
 /**
+ * 期望消耗抽数（拿到 UP 即停止继续投入）：E[min(n, 抽到 UP 所需抽数)]。
+ * 与「机会成本按全部预算计费」相比更贴近真实决策：抽到即停，尾款不退。
+ * n 很大时应收敛到 expectedPullsToRateUp。
+ */
+export function expectedSpentPulls(n, cfg, state = { pity: 0, fails: 0 }, maxN = 500) {
+  const dist = pullCostDistribution(cfg, state, maxN);
+  const m = Math.min(n, dist.length);
+  let sum = 0;
+  for (let i = 0; i < m; i += 1) sum += (i + 1) * dist[i];
+  const prob = dist.slice(0, m).reduce((s, p) => s + p, 0);
+  // 未在第 m 抽前拿到 UP 的概率质量，按预算上限 m 计费
+  return sum + m * Math.max(0, 1 - prob);
+}
+
+/**
  * 下行风险指标（离散近似，文档化定义）：
  *   varPulls：累计概率 ≥ α 的最小抽数（VaR_α）
  *   cvarPulls：E[n | n > varPulls]（尾部期望，CVaR_α）

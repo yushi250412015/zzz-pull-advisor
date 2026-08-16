@@ -1,6 +1,7 @@
 // 推荐编排：把 P1 概率 + P2 效用 + P3 决策 串成一条「抽某个角色」的推荐结果
 
 import { probabilityOfRateUp } from './gacha/pity.js';
+import { expectedSpentPulls } from './gacha/downside.js';
 import { marginalUtility, metaUtility } from './utility/utility.js';
 import { totalUtility, opportunityCost } from './decision/decision.js';
 
@@ -22,7 +23,9 @@ export function recommendCharacter({ box, resources, characterId, systems, banne
   const combatDelta =
     marginalUtility(box, characterId, systems) +
     (characters ? metaUtility(characters[characterId], undefined, metaMap ? metaMap[characterId] : null) : 0);
-  const cost = opportunityCost(pulls);
+  // 机会成本按「期望消耗抽数」计（抽到即停），避免按全额预算双重高估成本导致结论永远偏保守
+  const expectedPulls = expectedSpentPulls(pulls, bannerCfg, { pity: resources.pity || 0, fails: resources.fails || 0 });
+  const cost = opportunityCost(expectedPulls);
   const utility = totalUtility({ combatDelta, favor, risk, opportunityCost: cost, weights });
   return { pulls, risk, combatDelta, cost, utility };
 }

@@ -111,8 +111,9 @@ function renderResults() {
         characters,
         metaMap,
       });
-      const verdict = verdictFromScore(scoreFromUtility(r.utility), state.thresholds);
-      const frontier = buildPullStrategies({
+      const owned = !!state.box.characters[t.id]?.owned;
+      const verdict = owned ? null : verdictFromScore(scoreFromUtility(r.utility), state.thresholds);
+      const frontier = owned ? [] : buildPullStrategies({
         box: state.box,
         resources: state.resources,
         characterId: t.id,
@@ -128,6 +129,7 @@ function renderResults() {
         label: t.label,
         favor,
         verdict,
+        owned,
         score: scoreFromUtility(r.utility),
         guaranteedFirst: !!banner.firstGoldGuaranteed,
         paretoPulls: frontier.map((s) => s.pulls),
@@ -140,21 +142,23 @@ function renderResults() {
   $('results-list').innerHTML = results
     .map(
       (r) => `
-      <div class="card verdict-${r.verdict}">
+      <div class="card ${r.owned ? '' : `verdict-${r.verdict}`}">
         <div class="head">
           <span class="name">${r.label || characters[r.characterId].name}</span>
           ${r.guaranteedFirst ? '<span class="tag">首金必不歪</span>' : ''}
           <label class="favor">喜好 <input type="number" data-favor="${r.characterId}" min="0" max="100" value="${r.favor}" /></label>
-          <span class="verdict">${VERDICT_LABEL[r.verdict]}</span>
+          ${r.owned ? '<span class="verdict">已拥有</span>' : `<span class="verdict">${VERDICT_LABEL[r.verdict]}</span>`}
         </div>
         <div class="score">推荐分 ${(r.score * 100).toFixed(0)} / 100（总效用 ${r.utility.toFixed(1)}）</div>
-        <ul>
+        ${r.owned
+          ? '<div class="hint">已拥有该角色（影画收益暂未建模，按需自行权衡）</div>'
+          : `<ul>
           <li>空手风险 ${(r.risk * 100).toFixed(1)}%</li>
           <li>边际效用 +${r.combatDelta.toFixed(2)}</li>
           <li>预算 ${r.pulls} 抽（机会成本 ${r.cost.toFixed(0)}）</li>
           <li>最差 10% 期望抽数（CVaR90）：${r.cvarPulls.toFixed(0)} 抽</li>
           ${r.paretoPulls.length > 1 ? '<li>帕累托最优预算：' + r.paretoPulls.map((p) => p + ' 抽').join(' / ') + '</li>' : ''}
-        </ul>
+        </ul>`}
       </div>`,
     )
     .join('');

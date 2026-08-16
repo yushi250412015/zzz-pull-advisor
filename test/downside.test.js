@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { pullCostDistribution, downsideRiskPulls } from '../src/core/gacha/downside.js';
+import { pullCostDistribution, downsideRiskPulls, expectedSpentPulls } from '../src/core/gacha/downside.js';
 import { expectedPullsToRateUp } from '../src/core/gacha/pity.js';
 import { DEFAULT_CONFIG } from '../src/core/gacha/config.js';
 
@@ -11,6 +11,22 @@ describe('pullCostDistribution', () => {
     const total = dist.reduce((s, p) => s + p, 0);
     expect(total).toBeGreaterThan(0.999);
     expect(total).toBeLessThanOrEqual(1.0001);
+  });
+});
+
+describe('expectedSpentPulls（拿到即停的期望消耗）', () => {
+  it('小额预算时低于预算上限；大预算时收敛到 expectedPullsToRateUp', () => {
+    const small = expectedSpentPulls(60, cfg, { pity: 0, fails: 0 });
+    expect(small).toBeGreaterThan(0);
+    expect(small).toBeLessThan(60);
+    const large = expectedSpentPulls(1000, cfg, { pity: 0, fails: 0 });
+    expect(large).toBeCloseTo(expectedPullsToRateUp(cfg, { pity: 0, fails: 0 }), 0);
+  });
+
+  it('大保底状态下期望消耗显著下降', () => {
+    const fresh = expectedSpentPulls(1000, cfg, { pity: 0, fails: 0 });
+    const guaranteed = expectedSpentPulls(1000, cfg, { pity: 0, fails: 1 });
+    expect(guaranteed).toBeLessThan(fresh);
   });
 });
 
