@@ -37,7 +37,7 @@
   - 露西 T2→再下调 52：同榜 TOP7「数值相对其他支援偏低」
   - 派派 60（取中）：Prydwen T1 vs 17173 A级盘点（2026-01）「数值太低不推荐」<https://news.17173.com/content/01262026/043348358.shtml>
 - **Prydwen 未收录 → 用 9game 保守取值**：蕾米埃尔 90（「T0 配队」「未来很长一段时间异常体系最强阵容之一」<https://a.9game.cn/juequling/11957058.html>）、希格莉德 82（「冰系主C，0+1 成型，无刚需命座」<https://www.9game.cn/juequling/12001531.html>）、维琳娜保持 null（未评级）
-- **仍未校准**：南宫羽/普罗米娅以外无来源的角色 meta 保持 null 或原占位先验（艾莲/朱鸢/星见雅 85/80/92 为旧占位先验，未在本轮校准）
+- **仍未校准**：维琳娜、比利、可琳、安东、本保持 null；艾莲/朱鸢/星见雅 85/80/92 为旧占位先验（未在本轮校准）
 
 ## 4. 体系贡献校准（systems.js，2026-08）
 
@@ -50,3 +50,11 @@
 
 - BWIKI 角色页直链已实测 200：`https://wiki.biligame.com/zzz/<角色中文名>`（URL 编码后），由 `buildWikiUrl` 生成。
 - 官方社区工具（公告正文 307 条）：米游社 / HoYoWiki（baike.mihoyo.com/zzz）/ 官方小程序。
+
+## 6. 补充来源链接（子代理核实报告，2026-08）
+
+- HHW 角色页：真斗 <https://zzz.honeyhunterworld.com/1441-char/>、潘引壶 <https://zzz.honeyhunterworld.com/1421-char/>、千夏 <https://zzz.honeyhunterworld.com/2071-char/>
+- hostedgg 六大职业说明（命破=第 6 特性的佐证）：<https://hostedgg.com/blog/zenless-zone-zero-specialties-team-roles-guide>
+- gematsu 官方英文 3.1「The Long Goodbye」上线公告：<https://www.gematsu.com/2026/07/zenless-zone-zero-version-3-1-update-the-long-goodbye-launches-july-29>
+- gamespress 蕾米埃尔（流明/初代虚狩）：<https://www.gamespress.com/pl/Zenless-Zone-Zero-Celebrates-Its-2nd-Anniversary-All-New-Lumiflux-Attr>
+- game8 参考页（本次未能抓取正文，仅存档链接）：tier list <https://game8.co/games/Zenless-Zone-Zero/archives/435685>、Sunna <https://game8.co/games/Zenless-Zone-Zero/archives/572600>、Manato <https://game8.co/games/Zenless-Zone-Zero/archives/545823>、Pan Yinhu <https://game8.co/games/Zenless-Zone-Zero/archives/517115>
