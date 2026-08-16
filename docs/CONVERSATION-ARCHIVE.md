@@ -150,6 +150,8 @@ zzz-pull-advisor/
 
 ## 5. 本存档文件清单
 
-- `docs/CONVERSATION-ARCHIVE.md` —— 本文件（随 Git 入库，长期版本化）。
+- `docs/CONVERSATION-ARCHIVE.md` —— 本文件（压缩版上下文，随 Git 入库）。
+- `docs/HANDOVER.md` —— **接手开发总纲（事无巨细版）**：模块级 API、数据模型、踩坑时间线、待办与验收标准；接手新对话框先读它。
+- `..\工程开发守则-PROMPT.md`（工作区根目录）—— 通用工程守则 prompt（谨慎/审慎等），适用于本文件夹下所有项目对话框。
 - `docs/data/gacha-records-2026-08-15.json` —— 用户真实抽卡记录（1168 条，**已加入 .gitignore，不进公开仓库**）。
-- 桌面 zip：`zzz-会话存档-2026-08-15.zip`（上述两文件的便携打包件）。
+- 桌面 zip：`zzz-会话存档-2026-08-15.zip`（上述文件的便携打包件）。
