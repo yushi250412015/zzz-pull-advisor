@@ -31,11 +31,13 @@ describe('estimateMeta（Kalman 观测闭环）', () => {
 });
 
 describe('buildMetaPosteriors', () => {
-  it('只估计有先验 meta 的角色；冲突观测（派派）后验落在两观测之间', () => {
+  it('所有有先验的角色都产出后验；冲突观测（派派）后验落在两观测之间', () => {
     const posteriors = buildMetaPosteriors(characters, observations);
     expect(posteriors.sigrid).toBeDefined();
     expect(posteriors.piper.mu).toBeGreaterThan(48);
     expect(posteriors.piper.mu).toBeLessThan(72);
-    expect(posteriors.velina).toBeUndefined(); // meta=null 不臆造
+    expect(posteriors.velina).toBeDefined(); // meta 全量校准后维琳娜也有后验
+    expect(posteriors.velina.mu).toBeGreaterThan(75);
+    expect(posteriors.velina.mu).toBeLessThan(82); // 双源观测折中
   });
 });

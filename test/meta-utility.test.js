@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG } from '../src/core/gacha/config.js';
 
 describe('metaUtility（meta 先验接入，2026-08 建模修正）', () => {
   it('meta 为 null 时贡献 0（未知不臆造）', () => {
-    expect(metaUtility(characters.velina)).toBe(0); // velina.meta = null
+    expect(metaUtility({ id: 'x', meta: null })).toBe(0);
     expect(metaUtility(undefined)).toBe(0);
   });
 
@@ -22,7 +22,7 @@ describe('metaUtility（meta 先验接入，2026-08 建模修正）', () => {
 
   it('metaUtilityOfBox 汇总拥有的角色', () => {
     const box = { characters: { remielle: { owned: true }, sigrid: { owned: true }, velina: { owned: true } } };
-    expect(metaUtilityOfBox(box, characters)).toBeCloseTo(4.5 + 4.1 + 0);
+    expect(metaUtilityOfBox(box, characters)).toBeCloseTo(4.5 + 4.1 + 4); // velina meta 80 → 4
   });
 
   it('boxCombatValue = θ 体系收益 + meta 项；空 box 为 0', () => {

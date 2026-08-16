@@ -66,6 +66,9 @@ export const observations = [
   { characterId: 'chinatsu', value: 92, weight: 0.9, source: 'katya', date: '2026-02-02', note: 'BV1yPFPzKESn《妄想天使千夏综合测评：有力气的偶像！高速以太帷幕！》标题强正面；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'miyabi', value: 92, weight: 0.9, source: 'katya', date: '2024-12-15', note: 'BV1r5q9YXECT《星见雅综合测评：超强大范围输出》标题强正面；92=min(先验92+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'zhu-yuan', value: 83, weight: 0.9, source: 'katya', date: '2024-07-23', note: 'BV1tS42197rb《朱鸢综合测评：…爆发天花板以太大C》标题强正面；83=min(先验80+3,92) 我方保守映射（非视频原值）' },
+  // —— 维琳娜双源观测（2026-06，卡特亚 vs 毕加口径）——
+  { characterId: 'velina', value: 82, weight: 0.6, source: 'katya', date: '2026-06', note: 'BV1sGEy6mEKe 置顶引述官方动态（与蕾米埃尔官方推荐配队）+ 评论区「至少抽00 给风环境交保护费」共识；82 为我方保守映射（非视频原值）' },
+  { characterId: 'velina', value: 75, weight: 0.6, source: 'bijia', date: '2026-06', note: 'BV1u8LQ6BEdp 毕加置顶「和想象中有点差别」+ 评论区「真一般吧/和丽娜数值差不多」；75 为我方保守映射（非视频原值）' },
   // —— 老角色观测（毕加/卡特亚视频，2025 口径）——
   { characterId: 'nicole', value: 85, weight: 0.85, source: 'bijia', date: '2025-02', note: 'BV1meAYezE27《妮可强度登顶！》毕加标题级结论「强度登顶」；85=min(共识82+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'lycaon', value: 74, weight: 0.45, source: 'bili-comments', date: '2025-05', note: 'BV1iijSzfEic 自选S盘点评论区共识「狼＞丽娜＞11号/格莉丝＞猫又」；74 为我方保守映射（非原值）' },
