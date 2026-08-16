@@ -6,6 +6,9 @@
 
 ### 新增
 
+- **【架构重构 v3·SOLID 全项目落实】**：先定核心（抽卡决策：同步卡池+box → 纯强度「抽/观望/跳过」+风险+理由，详见 `docs/ARCHITECTURE.md` §0），再按七原则重构：①**SRP**：main.js 547 行 → ~50 行组装根；拆出 `ui/state`（状态+访问器）、`ui/render/{account,results,info}`（单面板渲染）、`ui/controller`（事件编排）、`datasource/sync-server`（HTTP 管道）；②**DIP**：新增核心门面 `core/advisor.js`（UI 只依赖稳定契约）；sync-client 注入 fetchImpl、sync-server 注入 performSync、mctsPlan 注入 valueFn；③**ISP**：advisor 细粒度方法，各面板只取所需；④**LSP**：新增 `test/lsp-contract.test.js` 固化推荐/池配置契约同形；⑤**LoD**：`getPool/getAccountLuck/getBudgetPulls` 访问器防深链；⑥**OCP**：新角色/卡池/观测源只加数据不改代码，换算法实现不动 UI；⑦**高内聚低耦合**：依赖单向无环，core 不依赖 DOM/fetch（Node 可直测）。新增架构测试 21 项（advisor 5 / state 6 / sync-client 4 / sync-server 3 / lsp-contract 3），UI jsdom 冒烟证明重构零回归
+- 测试 160 项（+21 架构）
+
 - **【安全隐私 + UI 高级化】**：①**UI 暗色赛博风重设计**（渐变主色 / 玻璃拟态面板 / 发光结论徽章 / 悬停动效 / 响应式，`style.css` 全量重写，保留全部既有 class 契约）；②**仓库脱敏**：`my-account.js` 改为示例占位（无 UID / 空 box），docs 中 uid 与 B 站昵称全部清除，真实数据仅存本机 `docs/data/`（gitignore）；`sensitivity-equipment.mjs` 改读本机快照；③**本地服务加固**：只监听 127.0.0.1、Origin 白名单（Vite dev + GitHub Pages）、3 秒限速、authkey 落盘脱敏、nosniff 头；④**页面隐私声明**：新增「隐私与安全」页脚 + CSP / no-referrer 元标签（无埋点、无第三方资源）；⑤测试适配（四池面板未同步提示）
 
 - **【产品重构·按用户要求】**：①**移除「角色机制速查」**（面板 + `src/data/mechanics.js` + 单测；核心定位=抽卡决策，机制游戏内即可查看）；②**移除喜好分，推荐纯按强度**（UI 喜好输入与 α_f 权重已删，`currentWeights` 恒 α_favor=0；引擎保留 favor 参数兼容库调用）；③**账号同步（UID 一键同步 box·保底·欧非）**：`scripts/import-records.mjs --serve` 本地 HTTP 服务（/health + /sync?uid=，CORS 放开供页面直连）——官方无「输入 UID 直查」接口，同步依赖游戏日志中的 authkey（约 1 天过期，UI 已如实说明）；UI 新增「账号同步」面板（UID 校验账号一致 → 四池拉取 → 刷新 state.account / box / 保底 / 欧非 → 全部推荐重算），解决「box 分析不准」（快照可随时刷新）；四池状态与音擎/邦布推荐改读 `state.account`；④UI 冒烟测试同步（账号同步面板断言、w-favor 已移除断言）

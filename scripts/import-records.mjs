@@ -16,7 +16,7 @@
 import { existsSync, readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import os from 'node:os';
-import http from 'node:http';
+import { startSyncServer } from '../src/datasource/sync-server.js';
 import { extractGachaPageUrl, fetchGachaRecords } from '../src/datasource/gacha-log.js';
 import { groupRecordsByType, summarizeAccount } from '../src/datasource/import-summary.js';
 import { standardS } from '../src/data/characters.js';
@@ -159,66 +159,13 @@ function compareWithLocal(summary) {
   console.log(`一致 ${ok}/${checks.length}`);
 }
 
-// 本地同步服务：UI 一键同步的桥梁（浏览器因 CORS 不能直连米哈游，由本服务代抓）
-// 用法：node scripts/import-records.mjs --serve   → http://127.0.0.1:8787
-//   GET /health        → { ok: true }
-//   GET /sync?uid=xxx  → 扫描游戏日志提取 authkey → 四池拉取 → 汇总 JSON（uid 用于校验账号一致）
-// 官方没有「输入 UID 直查」的接口：抽卡记录 API 必须带游戏内生成的 authkey（约 1 天过期）。
-//
-// 安全与隐私：
-// - 只监听 127.0.0.1（不回环对外网/局域网开放）；
-// - Origin 白名单：仅本工具页面（Vite dev / GitHub Pages）能读取响应，其他网站请求一律 403；
-// - 限速：两次同步至少间隔 3 秒；
-// - authkey 不出本机、不进任何响应；落盘快照一律脱敏（docs/data 已被 gitignore）。
-const ALLOWED_ORIGINS = new Set([
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  'https://yushi250412015.github.io',
-]);
-const SYNC_MIN_INTERVAL_MS = 3000;
-let lastSyncAt = 0;
-
-function startServer() {
-  const server = http.createServer(async (req, res) => {
-    const origin = req.headers.origin || null;
-    const allowed = !origin || ALLOWED_ORIGINS.has(origin);
-    const send = (code, obj) => {
-      const headers = {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'no-store',
-        'X-Content-Type-Options': 'nosniff',
-      };
-      if (allowed && origin) headers['Access-Control-Allow-Origin'] = origin;
-      res.writeHead(code, headers);
-      res.end(JSON.stringify(obj));
-    };
-    if (req.method === 'OPTIONS') {
-      res.writeHead(204, {
-        'Access-Control-Allow-Origin': allowed && origin ? origin : 'null',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        'Access-Control-Max-Age': '86400',
-      });
-      res.end();
-      return;
-    }
-    if (!allowed) {
-      send(403, { ok: false, message: '来源不被允许（Origin 白名单）' });
-      return;
-    }
-    try {
-      if (req.url === '/health') {
-        send(200, { ok: true });
-        return;
-      }
-      if (req.url && req.url.startsWith('/sync')) {
-        const now = Date.now();
-        if (now - lastSyncAt < SYNC_MIN_INTERVAL_MS) {
-          send(429, { ok: false, message: '请求过于频繁，请稍后再试' });
-          return;
-        }
-        lastSyncAt = now;
-        const url = new URL(req.url, 'http://localhost');
-        const expectUid = url.searchParams.get('uid') || null;
+async function main() {
+  const args = parseArgs(process.argv.slice(2));
+  if (args.serve) {
+    // 服务管道（HTTP / Origin 白名单 / 限速）在 src/datasource/sync-server.js；
+    // 这里只注入抓取实现（依赖倒置：服务不直接依赖 authkey 与米哈游接口细节）
+    startSyncServer({
+      performSync: async (expectUid) => {
         const pageUrl = resolvePageUrl({});
         const records = await fetchAll(pageUrl);
         const summary = summarizeAccount(groupRecordsByType(records), standardS);
@@ -226,33 +173,16 @@ function startServer() {
         const snapshotPath = join('docs', 'data', 'gacha-records-' + new Date().toISOString().slice(0, 10) + '.json');
         writeFileSync(snapshotPath, JSON.stringify({ generatedAt: new Date().toISOString(), sourceUrl: maskUrl(pageUrl), records }, null, 2), 'utf8');
         writeLocalSnapshot(records, summary);
-        send(200, {
-          ok: true,
+        return {
           uid: actualUid,
           uidMatched: expectUid ? String(expectUid) === String(actualUid) : true,
           recordCount: records.length,
           generatedAt: new Date().toISOString(),
           summary,
           snapshot: snapshotPath,
-        });
-        return;
-      }
-      send(404, { ok: false, message: 'not found' });
-    } catch (e) {
-      send(500, { ok: false, message: e.message });
-    }
-  });
-  server.listen(8787, '127.0.0.1', () => {
-    console.log('[serve] 本地同步服务已启动：http://127.0.0.1:8787（只监听本机回环地址，不对局域网/外网开放）');
-    console.log('[serve] /health 健康检查；/sync?uid=xxx 同步账号（Origin 白名单 + 3 秒限速；authkey 不出本机、落盘快照已脱敏）');
-    console.log('[serve] 说明：官方无 UID 直查接口；同步依赖游戏日志中的 authkey（游戏内打开一次抽卡记录页后生效，约 1 天过期）');
-  });
-}
-
-async function main() {
-  const args = parseArgs(process.argv.slice(2));
-  if (args.serve) {
-    startServer();
+        };
+      },
+    });
     return;
   }
   let records;
@@ -268,7 +198,7 @@ async function main() {
     console.log(`[url] ${maskUrl(pageUrl)}`);
     records = await fetchAll(pageUrl);
     snapshotPath = args.out || join('docs', 'data', `gacha-records-${new Date().toISOString().slice(0, 10)}.json`);
-    writeFileSync(snapshotPath, JSON.stringify({ generatedAt: new Date().toISOString(), sourceUrl: pageUrl, records }, null, 2), 'utf8');
+    writeFileSync(snapshotPath, JSON.stringify({ generatedAt: new Date().toISOString(), sourceUrl: maskUrl(pageUrl), records }, null, 2), 'utf8');
     console.log(`[out] 快照已写入 ${snapshotPath}（docs/data 已被 gitignore，不进公开仓库）`);
   }
   const summary = summarizeAccount(groupRecordsByType(records), standardS);

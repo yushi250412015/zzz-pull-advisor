@@ -135,7 +135,16 @@
 - `buildApiUrl(pageUrl, {gachaType, page, size, endId})`：authkey 原样字符串拼接（勿经 searchParams 二次编码，否则 `%` → `%25` 也炸）。
 - `fetchGachaRecords(pageUrl, {gachaType, size})`：分页拉全量（`end_id` 翻页；实测每页 size=20 可用）。
 
-### 4.16 数据文件
+### 4.16 v3 分层新增模块（2026-08 架构重构，SOLID 落点见 `docs/ARCHITECTURE.md`）
+- `src/core/advisor.js`：核心门面——装配 data/models/core，暴露稳定契约（DIP/ISP）；`characterCfg(banner)`（首金必不歪 rateUpChance=1）、`plan(initialState,{iterations,valueFn})`（systems 由门面注入）、`confidenceRows()`（可信度面板数据）。
+- `src/ui/state.js`：状态 + 访问器（LoD）+ 变更入口；`currentWeights` 恒 α_favor=0。
+- `src/ui/render/{account,results,info}.js`：单面板渲染器（SRP，不互相调用）。
+- `src/ui/controller.js`：事件接线 + `syncAccountFlow`（失败分型 uid-mismatch/unreachable/server）+ `runScenario`。
+- `src/datasource/sync-client.js`：`fetchAccountSync(uid,{fetchImpl})` + `mapAccountSummary`（纯函数）。
+- `src/datasource/sync-server.js`：`startSyncServer({performSync})` + `isOriginAllowed` / `canSyncNow`（纯助手可测）。
+- `scripts/import-records.mjs`：瘦身为 CLI 编排；`--serve` 时把抓取实现注入 sync-server。
+
+### 4.17 数据文件
 - `src/data/characters.js`：39 位角色。字段 `{id, name, rarity, element, role, meta, standard?, coreTeammates?, note?}`；`meta` 为 0-100 占位强度分（`null`=未知）；`standard: true` 表示常驻 S（50/50 歪池）；导出 `standardS` = Set(常驻 S 角色名)。已知情报：千夏（妄想天使·泛用辅助，元素待核实）、南宫羽（以太/击破，2.7）、普罗米娅（冰/异常·异放体系，2.8）、维琳娜（风/异常·染色，3.0）、爱芮（冰/异常·异放主C，2.6）、蕾米埃尔（流明/异常，初代虚狩，**流变机制**=随下位队友切伤害属性，3.1）、波可娜=Pulchra（物理/击破 A）、真斗=狛野真斗 A（2.3，属性定位待核实）、潘引壶 A（2.0，待核实）；常驻 S：丽娜/猫又/莱卡恩/格莉丝/11号。
 
 > **勘误（2026-08 接手后核实，详见 `docs/data-sources.md`）**：爱芮为**以太/异常**（BWIKI：<https://wiki.biligame.com/zzz/爱芮>），本文「冰/异常·异放主C」有误；「冰属性爱芮」是 2.8 普罗米娅的社区昵称。千夏=限定S·物理·支援、真斗=常驻A·火·**命破**（Rupture，2.3 新增第 6 定位）、潘引壶=常驻A·物理·防护。
@@ -145,12 +154,18 @@
 - `src/data/my-account.js`：用户真实账号（见 §6）。
 - `src/models/systems.js`：7 个体系先验（ice-attack / ether / anomaly / wind-anomaly / lumiflux-anomaly / ice-anomaly / physical-attack），各含 `{F_min, delta_max, k, contributions}`；贡献向量为**待校准先验**。
 
-## 5. UI 现状（`index.html` + `src/main.js` + `src/style.css`）
+## 5. UI 现状（2026-08 v3 分层重构，详见 `docs/ARCHITECTURE.md`）
 
-- 结构：资源面板（加密母带/菲林/保底计数（独家池）/大保底勾选）→ box 面板（39 个角色 checkbox，`badge` 显示元素，null 显示 `?`）→ 推荐结果卡片列表。
-- 数据流：`state = {resources, box.characters{id:{owned,mindscape}}, account}`；`input` 事件实时重算（喜好已移除：favor 恒 50、α_favor 恒 0）；`renderResults()` 展开 `banners`（含混池 3 选 1 目标与「首金必不歪」标签），每目标调 `recommendCharacter` + `verdictFromScore(scoreFromUtility(...))`。
+- **组装根** `src/main.js`（~50 行，只装配不写逻辑）：注入数据 → `createAdvisor` 建核心门面 → `createState` 建状态 → 逐个面板渲染 → `bindEvents` 接线。
+- **状态层** `src/ui/state.js`：`createState` + 访问器（`getPool/getAccountLuck/getBudgetPulls`，最小知识原则）+ 变更入口（`setResource/setOwned/setAccount/resetWeights`）+ `currentWeights`（恒 α_favor=0 纯强度）。
+- **渲染层** `src/ui/render/{account,results,info}.js`：每个面板一个函数，只渲染不计算；计算全部走 advisor 契约。
+- **控制器** `src/ui/controller.js`：事件接线 + `syncAccountFlow` 同步编排 + `runScenario`（MCTS 运行）。
+- **核心门面** `src/core/advisor.js`：UI 唯一的稳定契约（依赖倒置 + 接口隔离）；`recommendCharacter/recommendEquipment/plan/scenarios/confidenceRows/verdictFor`。
+- **同步链路**：页面 `src/datasource/sync-client.js`（fetch 注入）→ 本地服务 `src/datasource/sync-server.js`（Origin 白名单/限速，抓取注入）→ `scripts/import-records.mjs --serve` 注入抓取实现。
+- 结构：资源面板（加密母带/菲林/保底计数/大保底勾选）→ box 面板（31 角色 checkbox，`badge` 显示元素）→ 四池状态 → 账号同步 → 角色推荐卡（帕累托 + CVaR90）→ 音擎/邦布推荐 → 官方情报 → 强度可信度 → 权重面板 → MCTS 多场景 → 隐私页脚。
+- 数据流：`state = {resources, box.characters{id:{owned,mindscape}}, account}`；`input` 事件实时重算（favor 恒 50、α_favor 恒 0）；`renderResults` 展开 `advisor.banners()`（含混池 3 选 1 与「首金必不歪」标签）。
 - 账号数据：`state.account` 初始为示例占位（`my-account.js` 不含真实个人信息）；「账号同步」成功后整体刷新 box / 保底 / 欧非并重算全部推荐。
-- 已知局限：仅角色池进 UI；音擎/邦布池数据未接；权重未暴露为 UI 输入；KEEP 简洁风格（无框架）。
+- 架构级测试：advisor / state / sync-client / sync-server / lsp-contract / ui-smoke，全套 160 项。
 
 ## 6. 账号数据（uid 已从公开仓库脱敏；真实数据走本地同步，本机快照 docs/data/ 已被 gitignore）
 
