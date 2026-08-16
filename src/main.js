@@ -256,7 +256,7 @@ function renderMetaConfidence() {
   $('meta-confidence').innerHTML = rows;
 }
 
-// —— 从记录实时导入：上传日志 → 提取抽卡 H5 页面 URL（抓取仍需本地脚本，浏览器直连会被 CORS 拦截） ——
+// —— 账号同步备用通道：上传日志 → 提取抽卡 H5 页面 URL（一键同步走上方 --serve 本地服务） ——
 function bindImportPanel() {
   const fileInput = $('import-log-file');
   const urlBox = $('import-url');
