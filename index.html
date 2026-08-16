@@ -71,6 +71,12 @@
       </section>
 
       <section class="panel">
+        <h2>强度可信度（Kalman 多源后验）</h2>
+        <div id="meta-confidence"></div>
+        <p class="hint">先验 = 当前 meta；后验 = 按观测源可信度加权融合（Prydwen 0.8 / 权威博主 0.6 / 卡特亚 0.9——其视频文本当前网络受限待补入，通道已就绪）。冲突观测（派派/丽娜/露西等）自动折中并给出 95% 置信区间。</p>
+      </section>
+
+      <section class="panel">
         <h2>决策权重（可调）</h2>
         <div class="weights-grid">
           <label>强度 α_c <input type="number" id="w-combat" min="0" max="1" step="0.05" /></label>

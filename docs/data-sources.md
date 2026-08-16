@@ -139,3 +139,12 @@
 - **meta 维持 82**（0+1 成型、一线梯队、无「数据膨胀」级评价）；B站实况标题佐证强度正面（「三大顶分配队实战」等，视频无法取文本，未计入数值）
 - **机制库 `src/data/mechanics.js`**：12 位角色机制摘要 + 关键技能 + 推荐配队 + 来源逐条标注；`multipliers: null` 表示无带出处的具体倍率（不臆造，UI 引导到 BWIKI 全量倍率表）
 
+
+
+## 12. 卡特亚观测源通道（2026-08 建立，数据待补入）
+
+- **用户指定的一等可信观测源**：卡特亚（B站「卡特亚仿身泪滴」，mid **470042408**）。观测权重 `trust: 0.9`（`src/data/observations.js` 的 `observationSources.katya`）
+- **通道实测**：B站单视频 view API 可用（`api.bilibili.com/x/web-interface/view?bvid=...`，返回标题/作者/简介）；视频列表与搜索 API 被风控（-352/-799 无 cookie）、RSSHub 公共实例不可用、搜索引擎不索引其 ZZZ 视频 → **其希格莉德视频文本当前无法程序化读取**，具体倍率/结论待补入（不臆造）
+- **补入方式**：拿到 BV 号或视频简介/结论文本后，按 `observations.js` 格式添加 `{ characterId, value, weight: 0.9, source: 'katya', date, note: '视频/BV号' }`，UI 可信度面板即时融合；希格莉德具体倍率同补进 `mechanics.js` 的 `multipliers`（结构与出处校验已有单测）
+- 卡尔曼融合参数（`meta-posterior.js`）：先验方差 100、过程噪声 Q=4（版本漂移）、测量噪声 R=36/weight²
+

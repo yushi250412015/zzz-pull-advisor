@@ -3,6 +3,10 @@ import { banners } from './data/banners.js';
 import { systems } from './models/systems.js';
 import { DEFAULT_CONFIG } from './core/gacha/config.js';
 import { boxCombatValue } from './core/utility/utility.js';
+import { downsideRiskPulls } from './core/gacha/downside.js';
+import { buildMetaPosteriors } from './core/bayes/meta-posterior.js';
+import { confidenceInterval } from './core/bayes/kalman.js';
+import { observations } from './data/observations.js';
 import { extractGachaPageUrl, extractGachaType } from './datasource/gacha-log.js';
 import { recommendEquipment, EQUIPMENT_DEFAULTS } from './core/recommend-equipment.js';
 import { buildPullStrategies } from './core/decision/pull-strategies.js';
@@ -110,6 +114,7 @@ function renderResults() {
         favor,
         weights: currentWeights(),
       });
+      const downside = downsideRiskPulls(cfg, { pity: state.resources.pity || 0, fails: state.resources.fails || 0 }, 0.9);
       results.push({
         banner,
         characterId: t.id,
@@ -119,6 +124,7 @@ function renderResults() {
         score: scoreFromUtility(r.utility),
         guaranteedFirst: !!banner.firstGoldGuaranteed,
         paretoPulls: frontier.map((s) => s.pulls),
+        cvarPulls: downside.cvarPulls,
         ...r,
       });
     }
@@ -139,6 +145,7 @@ function renderResults() {
           <li>空手风险 ${(r.risk * 100).toFixed(1)}%</li>
           <li>边际效用 +${r.combatDelta.toFixed(2)}</li>
           <li>预算 ${r.pulls} 抽（机会成本 ${r.cost.toFixed(0)}）</li>
+          <li>最差 10% 期望抽数（CVaR90）：${r.cvarPulls.toFixed(0)} 抽</li>
           ${r.paretoPulls.length > 1 ? '<li>帕累托最优预算：' + r.paretoPulls.map((p) => p + ' 抽').join(' / ') + '</li>' : ''}
         </ul>
       </div>`,
@@ -216,6 +223,26 @@ function renderOfficialFacts() {
     '<ul><li>全新代理人：<ul>' + agentRows + '</ul></li>' +
     '<li>全新音擎：<ul>' + engineRows + '</ul></li>' +
     '<li>全新邦布：<ul>' + bangbooRows + '</ul></li></ul>';
+}
+
+// —— 强度可信度（Kalman 多源后验；观测源与权重见 observations.js） ——
+function renderMetaConfidence() {
+  const posteriors = buildMetaPosteriors(characters, observations);
+  const rows = Object.entries(posteriors)
+    .map(([id, p]) => {
+      const c = characters[id];
+      if (!c || c.meta == null) return '';
+      const ci = confidenceInterval(p);
+      const delta = p.mu - c.meta;
+      const arrow = Math.abs(delta) < 1 ? '≈' : delta > 0 ? '↑' : '↓';
+      return (
+        '<div class="conf-row"><span class="conf-name">' + c.name + '</span>' +
+        '<span>先验 ' + c.meta + ' → 后验 ' + p.mu.toFixed(1) + ' ' + arrow +
+        '（95% CI ' + ci.min.toFixed(0) + '–' + ci.max.toFixed(0) + '）</span></div>'
+      );
+    })
+    .join('');
+  $('meta-confidence').innerHTML = rows;
 }
 
 // —— 角色机制速查（mechanics.js，官方/BWIKI/博主口径摘要；全量倍率表走 wiki 链接） ——
@@ -469,6 +496,7 @@ renderResults();
 renderEquipmentResults();
 renderOfficialFacts();
 renderMechanics();
+renderMetaConfidence();
 renderWeights();
 renderMctsScenarios();
 bindEvents();

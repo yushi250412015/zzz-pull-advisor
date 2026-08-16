@@ -6,6 +6,10 @@
 
 ### 新增
 
+- **【B·建模】Kalman 多源观测闭环（卡特亚=一等观测源）**：`src/data/observations.js`（逐条观测 {value/weight/source/date/note}，源可信度 Prydwen 0.8 / 权威博主 0.6 / **卡特亚 0.9**）+ `estimateMeta / buildMetaPosteriors` 纯函数（先验=现有 meta、R=36/weight² 融合、Q=4 版本漂移）+ UI「强度可信度」面板（先验 → 后验 μ ± 95% CI，冲突观测自动折中）+ 单测 4 项；卡特亚频道（mid 470042408）与 B站 view API 通道已建档，其视频文本当前网络受限（风控），数据待补入即插即用（data-sources.md §12）
+- **【B·建模】CVaR 下行风险**：`pullCostDistribution / downsideRiskPulls` 纯函数（由精确 DP 分布求 VaR/CVaR 抽数，离散尾部期望，与 expectedPullsToRateUp 交叉印证）+ 单测 5 项（归一化/交叉印证/大保底降险/垫抽降险）；推荐卡新增「最差 10% 期望抽数（CVaR90）」
+- **【③SOP 演练】**：`update-banners.mjs` + `archive-announcements.mjs` 复跑通过（3.1 全条目「已录入」）；触发条件=新版本公告出现在窗口内
+- 测试 121 项（+9：meta-posterior 4 + downside 5）
 - **【B·建模修正】meta 先验接入引擎（修复重大建模洞）**：此前 θ 体系增益只覆盖有体系数据的角色，琉音/希格莉德/千夏等 T0 角色边际效用恒 0；新增 `metaUtility / metaUtilityOfBox / boxCombatValue`（meta/100 × metaScale，可学习参数默认 5，与体系 delta_max 同量级；meta=null 贡献 0 不臆造）；`recommendCharacter` 增加可选 `characters` 参数（缺省保持纯 θ 行为，新旧行为各有测试）；`mctsPlan` 增加 `valueFn` 依赖注入（默认 boxUtility，种子断言不变）；UI 两处统一改用 θ+meta 口径；单测 +7（meta-utility 6 + recommend 1）
 - **【A·数据完备化】希格莉德博主实测核实**：骁骑礼赞配对 `inferred → verified`（游侠网 + niubi.wiki 两篇独立攻略同款专属音擎：713 攻/48% 爆伤、冰伤被动「骨寒」；博主译名「骑士颂赞」）；机制入档（【骑士专注】/三段蓄力/【敛枪式】）；meta 维持 82；具体倍率两文未给出 → 不臆造，全量表以 BWIKI 页为准
 - **【A·数据完备化】角色机制速查库**：`src/data/mechanics.js`（12 位角色：机制摘要/关键技能/推荐配队/来源逐条标注，无源不收录、无出处倍率标 null）+ 结构单测 + UI「角色机制速查」面板（wiki 倍率表链接）；`docs/data-sources.md` §11 入档
