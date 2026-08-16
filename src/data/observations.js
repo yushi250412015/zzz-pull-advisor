@@ -21,6 +21,7 @@ export const observationSources = {
   mengxuan: { label: '梦轩dada（B站视频，mid 27500557）', trust: 0.7 },
   prydwen: { label: 'Prydwen tier list', trust: 0.8 },
   blogger: { label: '权威博主文章（游侠网/17173/9game 等）', trust: 0.6 },
+  'bili-comments': { label: 'B站视频评论区（多条独立交叉时采用）', trust: 0.45 },
 };
 
 export const observations = [
@@ -65,6 +66,9 @@ export const observations = [
   { characterId: 'chinatsu', value: 92, weight: 0.9, source: 'katya', date: '2026-02-02', note: 'BV1yPFPzKESn《妄想天使千夏综合测评：有力气的偶像！高速以太帷幕！》标题强正面；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'miyabi', value: 92, weight: 0.9, source: 'katya', date: '2024-12-15', note: 'BV1r5q9YXECT《星见雅综合测评：超强大范围输出》标题强正面；92=min(先验92+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'zhu-yuan', value: 83, weight: 0.9, source: 'katya', date: '2024-07-23', note: 'BV1tS42197rb《朱鸢综合测评：…爆发天花板以太大C》标题强正面；83=min(先验80+3,92) 我方保守映射（非视频原值）' },
+  // —— 星见雅衰落冲突（两条独立评论交叉：毕加年度榜 2026-02 + 卡特亚南宫羽视频 2026-03）——
+  // 「不能稳定出场/被仪玄碾压」「危局几乎期期压线过，有柚叶都解决不了」；与 2024 开服期「超模」评价冲突
+  { characterId: 'miyabi', value: 70, weight: 0.45, source: 'bili-comments', date: '2026-03', note: '两条独立评论交叉：雅「越来越乏力/期期压线过」；数值 70 为我方对评论语义的保守映射（非原值），与旧占位先验 92 冲突，供 Kalman 折中' },
   // —— 爱芮观测（2026-02/03 视频，两源交叉）——
   { characterId: 'aria', value: 92, weight: 0.9, source: 'katya', date: '2026-02-27', note: 'BV1opAmzXEoD《爱芮综合测评：屁股有劲！》标题强正面；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'aria', value: 92, weight: 0.7, source: 'mengxuan', date: '2026-03-04', note: 'BV1URPNzREDf《爱芮终极指南：以太异常主C的荣耀》标题强正面，并确认「以太异常主C」定位（与项目数据一致）；92 为我方保守映射（非视频原值）' },

@@ -44,7 +44,7 @@ export const systems = {
     F_min: 0.5,
     delta_max: 12,
     k: 6,
-    // 维琳娜为蕾米埃尔专属售后（社区 T0 配队：蕾米埃尔主C+维琳娜风异常副C；来源 data-sources.md）
+    // 维琳娜为蕾米埃尔专属售后（官方推荐配队 + 社区 T0 配队；官方动态经卡特亚 BV1sGEy6mEKe 置顶引述）
     contributions: { remielle: 0.85, velina: 0.25 },
   },
   'ice-anomaly': {

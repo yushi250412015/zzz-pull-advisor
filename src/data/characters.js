@@ -12,7 +12,7 @@ export const characters = {
   remielle: { id: 'remielle', name: '蕾米埃尔', enName: 'Remielle Dan', rarity: 'S', element: 'lumiflux', role: 'anomaly', meta: 90, note: '3.1 新·流明异常，初代虚狩；流变机制（随下位上场代理人切换伤害属性）；T0 配队核心（9game；Prydwen 未收录）' },
   sigrid: { id: 'sigrid', name: '希格莉德', enName: "Sigrid de L'Azur", rarity: 'S', element: 'ice', role: 'attack', meta: 82, note: '3.1 下半新·冰强攻·站场主C；【骑士专注】+三段蓄力+【敛枪式】爆发；0+1 成型、M0 机制完整（游侠网/niubi.wiki/9game；Prydwen 未收录）' },
   aria: { id: 'aria', name: '爱芮', enName: 'Aria', rarity: 'S', element: 'ether', role: 'anomaly', meta: 90, note: '2.6 以太·异放主C（Prydwen T0），3.1 上半复刻；注意「冰属性爱芮」是 2.8 普罗米娅的社区昵称，爱芮本人为以太' },
-  rinna: { id: 'rinna', name: '琉音', enName: 'Dialyn', rarity: 'S', element: 'physical', role: 'stun', meta: 90, note: '3.1 下半自选混池；物理击破辅助（Prydwen T0；「物理队效率型辅助天花板」9game）' },
+  rinna: { id: 'rinna', name: '琉音', enName: 'Dialyn', rarity: 'S', element: 'physical', role: 'stun', meta: 90, note: '3.1 下半自选混池；物理击破辅助「赠送大招」、强攻/命破队辅助，排轴要求高（Prydwen T0；9game；卡特亚 BV1FvyMBqEmX）' },
   yuzuha: { id: 'yuzuha', name: '浮波柚叶', enName: 'Ukinami Yuzuha', rarity: 'S', element: 'physical', role: 'support', meta: 90, note: '3.1 下半自选混池；2.1 物理支援·异常体系专辅（Prydwen T0）' },
   harumasa: { id: 'harumasa', name: '浅羽悠真', enName: 'Asaba Harumasa', rarity: 'S', element: 'electric', role: 'attack', meta: 72, note: '3.1 下半自选混池；1.4 电强攻（Prydwen T1）' },
 

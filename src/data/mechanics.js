@@ -40,7 +40,11 @@ export const mechanics = {
     keySkills: ['异放（额外异常结算）'],
     team: '爱芮 + 千夏（支援，可进爱芮队）',
     multipliers: null,
-    sources: ['https://wiki.biligame.com/zzz/爱芮（BWIKI 技能描述）'],
+    facts: [
+      '薇薇安的「四法厄同」可平替专盘（面板差距极小：攻击差 100 内/精通差 10 内；毕加 BV1f9PKz5EHC 评论区实测，单源）',
+      '0+0 够用是评论区共识（同视频）',
+    ],
+    sources: ['https://wiki.biligame.com/zzz/爱芮（BWIKI 技能描述）', 'https://www.bilibili.com/video/BV1f9PKz5EHC（毕加丶·最佳配装，评论区）'],
   },
   promya: {
     characterId: 'promya',
@@ -48,7 +52,11 @@ export const mechanics = {
     keySkills: ['异放（固定倍率结算）', '寒蚀值（资源）'],
     team: '冰异常队（待更多配队数据）',
     multipliers: null,
-    sources: ['https://wiki.biligame.com/zzz/普罗米娅（BWIKI 技能描述）'],
+    facts: [
+      '卡特亚自承「配队测试明显不足，只测了薇薇安相关」（BV1mXRVBdE2c 置顶评论）——其配队结论可信度按此打折，已入观测源 note',
+      '卡特亚推荐配置：囚徒手记 4 件 + 法厄同之歌 2 件；异常精通/冰伤/异常掌控（同视频置顶）',
+    ],
+    sources: ['https://wiki.biligame.com/zzz/普罗米娅（BWIKI 技能描述）', 'https://www.bilibili.com/video/BV1mXRVBdE2c（卡特亚·综合攻略，置顶评论）'],
   },
   velina: {
     characterId: 'velina',
@@ -56,7 +64,11 @@ export const mechanics = {
     keySkills: ['赋彩（染色）', '乱流', '风化'],
     team: '蕾米埃尔 + 维琳娜 + 异常增伤辅助',
     multipliers: null,
-    sources: ['https://wiki.biligame.com/zzz/维琳娜（BWIKI）', 'https://a.9game.cn/juequling/11957058.html（T0 配队）'],
+    facts: [
+      '「维琳娜+蕾米埃尔」为官方推荐配队（卡特亚 BV1sGEy6mEKe 置顶评论引述官方动态）→ 佐证 lumiflux-anomaly 体系 +维琳娜的校准',
+      '卡特亚推荐配置：呼啸沙龙 4 件 + 回能 2 件；异常精通/风伤/回能（同视频置顶）',
+    ],
+    sources: ['https://wiki.biligame.com/zzz/维琳娜（BWIKI）', 'https://a.9game.cn/juequling/11957058.html（T0 配队）', 'https://www.bilibili.com/video/BV1sGEy6mEKe（卡特亚·综合测评，置顶评论）'],
   },
   'nangong-yu': {
     characterId: 'nangong-yu',
@@ -64,7 +76,13 @@ export const mechanics = {
     keySkills: ['极性紊乱', '颤音', '以太帷幕·妄想重奏'],
     team: '妄想天使组合（千夏/爱芮）',
     multipliers: null,
-    sources: ['https://wiki.biligame.com/zzz/南宫羽（BWIKI）'],
+    facts: [
+      '三小只（妄想天使）羁绊强度不低，但击破队实战排轴影响不小（卡特亚 BV1VfAEziEQ2 置顶）',
+      '爱芮双连携可满 8 层棒棒（同源，机制联动）',
+      '00 档四冲击实测比四法厄同高约 6000 分（BV1MhQqBEE4Q 评论区，单源）',
+      '入爱芮队存在负提升个例：失衡太快致轴对不上（同视频评论区，单源）',
+    ],
+    sources: ['https://wiki.biligame.com/zzz/南宫羽（BWIKI）', 'https://www.bilibili.com/video/BV1VfAEziEQ2（卡特亚·综合测评，置顶）', 'https://www.bilibili.com/video/BV1MhQqBEE4Q（毕加丶·最佳配装，评论区）'],
   },
   chinatsu: {
     characterId: 'chinatsu',
@@ -97,6 +115,30 @@ export const mechanics = {
     team: '物理强攻队（如猫又）',
     multipliers: null,
     sources: ['https://wiki.biligame.com/zzz/波可娜（BWIKI）'],
+  },
+  rinna: {
+    characterId: 'rinna',
+    summary: 'S级物理击破（2.4）。「赠送大招」的击破辅助：一失衡三大招爆发；评论区定位为强攻/命破队辅助，与叶瞬光（虚狩）配队设计；排轴与手法要求高，不适合无脑打法。',
+    keySkills: ['好评如潮（队内含强攻/命破时全队增伤）', '恶意投诉（失衡易伤）', '连携技升级终结技'],
+    team: '琉音 + 强攻/命破主C + 功能辅助（叶瞬光队为其设计目标）',
+    multipliers: null,
+    facts: [
+      '卡特亚标题「赠送大招的击破！」+ 置顶配置（山大王 4 件套）（BV1FvyMBqEmX）',
+      '评论区共识：需要排轴与手法，「不适合无脑玩家」（同视频，单源）',
+    ],
+    sources: ['https://www.bilibili.com/video/BV1FvyMBqEmX（卡特亚·综合测评）', 'https://www.9game.cn/juequling/11551513.html（9game 养成）'],
+  },
+  miyabi: {
+    characterId: 'miyabi',
+    summary: 'S级冰异常（1.0 开服首批）。异常打直伤的开创者：三段拔刀大范围输出；2 影画可独立站场；专武无可替代下位。⚠️ 2026 年评论区多次出现「被仪玄碾压/期期压线」的衰落论（见 observations 冲突观测），旧 meta 92 为占位先验。',
+    keySkills: ['三段拔刀（大范围）', '异常直伤机制', '2 影画站场'],
+    team: '雅 + 苍角 + 莱卡恩/柚叶（雅狼苍/雅柚苍）',
+    multipliers: null,
+    facts: [
+      '卡特亚置顶：「星见雅的机能确实强，不失衡就可以硬打；2 影画自己站场就很强」（BV1r5q9YXECT，2024-12）',
+      '2024 开服期评论区共识「比雷神出来还超模」（同视频）——与 2026 衰落论冲突，均已入观测',
+    ],
+    sources: ['https://www.bilibili.com/video/BV1r5q9YXECT（卡特亚·综合测评，置顶评论）'],
   },
   nicole: {
     characterId: 'nicole',
