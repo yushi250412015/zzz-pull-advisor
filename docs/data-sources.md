@@ -168,3 +168,13 @@
 - **标题级映射规则（正式化）**：视频文本不可读时，标题强正面结论 → `value = min(角色现有共识 meta + 3, 92)`，note 必注「我方保守映射，非视频原值」（已写入 observations.js 头注释）
 - 效果：aria 后验 90 → μ=91.22（95% CI 82.7–99.7，双源确认、较先验收窄）
 
+
+
+### 12.3 自动查找已打通（2026-08）：相关推荐图爬取
+
+- **结论**：B站「搜索/空间列表」接口需登录（wbi 风控 -352/-799、nav -101 不给签名密钥），但 **archive/related（相关推荐）接口免登录可用** → 从已知视频 BFS 爬「相关视频」图，按作者 mid/标题关键词过滤，即可**自动发现博主视频**
+- **工具**：`scripts/find-bili-videos.mjs --seed <BV> --mid <作者id> --keyword <词> --depth 3 --max 400`（自动角色匹配 `src/datasource/bili-title-match.js`、输出候选观测清单；null-meta 角色跳过不臆造）
+- **首次爬取成果（卡特亚 mid 43222001，关键词 绝区零）**：自动发现其 ZZZ 测评系列——千夏（BV1yPFPzKESn「有力气的偶像！高速以太帷幕」67 万播放）、南宫羽（BV1VfAEziEQ2）、普罗米娅（BV1mXRVBdE2c）、维琳娜+佩洛伊斯（BV1sGEy6mEKe「强力聚怪+风属性」）、星见雅（BV1r5q9YXECT「超强大范围输出」）、琉音（BV1FvyMBqEmX）、浮波柚叶（BV1tfu6zqE6G）、艾莲×2、朱鸢（BV1tS42197rb「爆发天花板以太大C」）、零号安比+波可娜（BV1Uv9CYjEaX）、蕾米埃尔 7 影画（BV1pC3s6gEEy）等
+- **落库纪律**：仅「标题含明确强度结论词」的才按 `min(共识+3, 92)` 落库——本轮落库 chinatsu 92 / miyabi 92 / zhu-yuan 83（+此前 remielle 92）；描述性标题（如「综合攻略」「赠送大招的击破」）与 meta=null 角色跳过，留待视频文本或人工审阅
+- **未录入角色库的测评**（记录备查）：卢西娅（BV1pg4EzkEv9，83.8 万播放）、般岳、伊芙琳、奥菲丝、兔兔照——如需，可扩展 characters.js 后补观测
+

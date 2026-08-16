@@ -55,6 +55,12 @@ export const observations = [
   //       当前不可程序化读取；本条目为「标题级强正面结论」的保守映射（现有共识 82 + 3 = 85，非视频原值）。
   //       获得视频内具体结论后，请替换/追加为真实数值观测（data-sources.md §12.1）。
   { characterId: 'sigrid', value: 85, weight: 0.9, source: 'katya', date: '2026-08-14', note: 'BV1ZPgA6YEwa《希格莉德综合测评：超级力量！》标题强正面结论；数值 85 为我方保守映射（非视频原值），待补视频内具体结论' },
+  // —— 蕾米埃尔观测（2026-07-24 视频，自动发现）——
+  { characterId: 'remielle', value: 92, weight: 0.9, source: 'katya', date: '2026-07-24', note: 'BV1fGga6SE9F《蕾米埃尔丹综合测评：圣光级虚狩！…数值正是为王的理由！》标题强正面（191.9 万播放）；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
+  // —— 自动发现批次（2026-08 图爬取；仅标题含明确强度结论词才落库）——
+  { characterId: 'chinatsu', value: 92, weight: 0.9, source: 'katya', date: '2026-02-02', note: 'BV1yPFPzKESn《妄想天使千夏综合测评：有力气的偶像！高速以太帷幕！》标题强正面；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
+  { characterId: 'miyabi', value: 92, weight: 0.9, source: 'katya', date: '2024-12-15', note: 'BV1r5q9YXECT《星见雅综合测评：超强大范围输出》标题强正面；92=min(先验92+3,92) 我方保守映射（非视频原值）' },
+  { characterId: 'zhu-yuan', value: 83, weight: 0.9, source: 'katya', date: '2024-07-23', note: 'BV1tS42197rb《朱鸢综合测评：…爆发天花板以太大C》标题强正面；83=min(先验80+3,92) 我方保守映射（非视频原值）' },
   // —— 爱芮观测（2026-02/03 视频，两源交叉）——
   { characterId: 'aria', value: 92, weight: 0.9, source: 'katya', date: '2026-02-27', note: 'BV1opAmzXEoD《爱芮综合测评：屁股有劲！》标题强正面；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'aria', value: 92, weight: 0.7, source: 'mengxuan', date: '2026-03-04', note: 'BV1URPNzREDf《爱芮终极指南：以太异常主C的荣耀》标题强正面，并确认「以太异常主C」定位（与项目数据一致）；92 为我方保守映射（非视频原值）' },
