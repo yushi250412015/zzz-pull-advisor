@@ -267,3 +267,51 @@ h1 {
   white-space: pre-wrap;
   word-break: break-all;
 }
+
+.weights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.weights-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.weights-grid input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.weights-grid input:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.weights-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.weights-controls button {
+  padding: 5px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #f8fafc;
+  cursor: pointer;
+}
+
+.weights-controls button:hover {
+  background: #eef2f7;
+}

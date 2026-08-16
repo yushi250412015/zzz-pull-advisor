@@ -59,3 +59,44 @@
 - gematsu 官方英文 3.1「The Long Goodbye」上线公告：<https://www.gematsu.com/2026/07/zenless-zone-zero-version-3-1-update-the-long-goodbye-launches-july-29>
 - gamespress 蕾米埃尔（流明/初代虚狩）：<https://www.gamespress.com/pl/Zenless-Zone-Zero-Celebrates-Its-2nd-Anniversary-All-New-Lumiflux-Attr>
 - game8 参考页（本次未能抓取正文，仅存档链接）：tier list <https://game8.co/games/Zenless-Zone-Zero/archives/435685>、Sunna <https://game8.co/games/Zenless-Zone-Zero/archives/572600>、Manato <https://game8.co/games/Zenless-Zone-Zero/archives/545823>、Pan Yinhu <https://game8.co/games/Zenless-Zone-Zero/archives/517115>
+
+
+## 7. 角色数据审计（2026-08，逐项核对，防信息污染）
+
+**来源分级**：✅官方公告 = announcement-static.mihoyo.com 实测（ann_id 1262《3.1版本「漫长的告别」更新公告》）；🔶BWIKI 信息框 = wiki.biligame.com/zzz 实测抓取；🔶常识 = 多社区一致的基础事实（未逐页取证，如与官方冲突以官方为准）。
+**已尝试但受限的官方源（如实记录）**：HoYoWiki（wiki.hoyolab.com）本网络 403「地区限制」；官网 roster 内容 API（sg-public-api-static.hoyoverse.com/content_v2_user）参数未公开且客户端渲染，未取到数据；官方抽卡概率 JSON（operation-webstatic.hoyoverse.com/gacha_info/nap/）本网络 403（地区限制）。抽卡概率页本身（gs.hoyoverse.com/static/nap-official-gacha-probability/）可访问但数据同源受限。
+
+| 角色 | element | role | rarity | 实装版本（日期） | 来源 |
+|---|---|---|---|---|---|
+| 蕾米埃尔 | lumiflux | anomaly | S | 3.1 | ✅官方公告「蕾米埃尔(流明·异常)」 |
+| 希格莉德 | ice | attack | S | 3.1 | ✅官方公告「希格莉德(冰·强攻)」 |
+| 爱芮 | ether | anomaly | S | 2.6（2026-03-04） | 🔶BWIKI 信息框；官方公告 1262 提及（核心技改动） |
+| 琉音 | physical | stun | S | 2.4 | 🔶9game「物理属性击破辅助」+ BWIKI |
+| 浮波柚叶 | physical | support | S | 2.1（2025-07-16） | 🔶BWIKI 信息框 |
+| 浅羽悠真 | electric | attack | S | 1.4 | 🔶17173「电属性强攻」 |
+| 千夏 | physical | support | S | 2.6（2026-02-06） | 🔶BWIKI 信息框 + 17173「S级物理属性支援」 |
+| 南宫羽 | ether | stun | S | 2.7（2026-03-24） | 🔶BWIKI 信息框 |
+| 普罗米娅 | ice | anomaly | S | 2.8（2026-05-06） | 🔶BWIKI 信息框；官方公告 1262 提及 |
+| 维琳娜 | wind | anomaly | S | 3.0（2026-06-17） | 🔶BWIKI 信息框 |
+| 丽娜 | electric | support | 常驻S | 1.0 | 🔶常识；官方公告 1262 提及 |
+| 猫又 | physical | attack | 常驻S | 1.0 | 🔶常识 |
+| 莱卡恩 | ice | stun | 常驻S | 1.0 | 🔶常识 |
+| 格莉丝 | electric | anomaly | 常驻S | 1.0 | 🔶常识 |
+| 11号 | fire | attack | 常驻S | 1.0 | 🔶常识 |
+| 真斗 | fire | rupture(命破) | A | 2.3（2025-10-15） | 🔶BWIKI 信息框 + HHW/Fragster（Rupture） |
+| 潘引壶 | physical | defense | A | 2.0（2025-06-06） | 🔶BWIKI 信息框 |
+| 波可娜 | physical | stun | A | 1.6（2025-03-12） | 🔶BWIKI 信息框 |
+| 安比/妮可/比利/可琳/安东/本/苍角 | 电/以太/物/物/电/火/冰 | 击破/支援/强攻/强攻/强攻/防护/支援 | A | 1.0 | 🔶常识（官方公告 1262 提及安比/比利/本） |
+| 露西/派派/赛斯 | 火/物/电 | 支援/异常/防护 | A | 1.1 | 🔶常识（官方公告 1262 提及露西/派派） |
+| 艾莲/朱鸢/星见雅 | ice/ether/ice | attack/attack/anomaly | S | 1.0 | 🔶常识 |
+
+**审计结论**：全部 39 位角色的 element/role/rarity/版本与既有数据**无冲突**；其中 3.1 两位角色为官方公告口径，千夏/真斗/潘引壶/爱芮/普罗米娅/维琳娜/浮波柚叶/南宫羽/波可娜 为 BWIKI 信息框实测口径，其余为多社区一致的常识值（官方 roster 数据本网络受限，已如实标注）。
+
+## 8. 官方 3.1 情报（ann_id 1262 官方公告原文，2026-08 实测）
+
+- **全新代理人**：S级代理人[蕾米埃尔(流明·异常)]「复乐园」频段；S级代理人[希格莉德(冰·强攻)]「直到天空沉落」频段
+- **全新音擎**：S级音擎[空羽复归之诗(异常)]、S级音擎[骁骑礼赞(强攻)]
+- **全新邦布**：S级邦布[艾瑞儿]「卓越搭档」频段
+- **版本时间**：2026/07/29–2026/09/09（42 天）；停服补偿菲林 300 + 问题修复补偿菲林 300
+- **快照**：`docs/data/ann-content-1262-2026-08.json`（gitignore）；接口 `fetchAnnContent(1262)` 可随时重取
+

@@ -53,6 +53,23 @@
       </section>
 
       <section class="panel">
+        <h2>决策权重（可调）</h2>
+        <div class="weights-grid">
+          <label>强度 α_c <input type="number" id="w-combat" min="0" max="1" step="0.05" /></label>
+          <label>喜好 α_f <input type="number" id="w-favor" min="0" max="1" step="0.05" /></label>
+          <label>风险 λ_risk <input type="number" id="w-risk" min="0" step="5" /></label>
+          <label>成本 α_cost <input type="number" id="w-cost" min="0" step="0.005" /></label>
+          <label>「抽」阈值 <input type="number" id="t-pull" min="0" max="1" step="0.05" /></label>
+          <label>「观望」阈值 <input type="number" id="t-consider" min="0" max="1" step="0.05" /></label>
+        </div>
+        <div class="weights-controls">
+          <label><input type="checkbox" id="w-auto" checked /> λ_risk / α_cost 自动推导</label>
+          <button id="reset-weights" type="button">恢复默认</button>
+        </div>
+        <p class="hint">约定：强度:喜好 = 8:2（不考虑 XP）。自动模式按「3.1 零氪 140 抽 + 你的账号平均 80.4 抽/S（偏非）」推导 λ_risk ≈ 38.9、α_cost ≈ 0.143；任何手动改动即切为手动模式，改动失焦后即时生效。</p>
+      </section>
+
+      <section class="panel">
         <h2>时序规划 · MCTS：现在抽 vs 攒希格莉德</h2>
         <p class="hint">比较「现在把预算投入上半池（蕾米埃尔）各比例」与「全部攒给下半希格莉德」的平均成型收益（基于当前 box 与体系先验）。</p>
         <div class="mcts-controls">

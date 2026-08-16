@@ -4,7 +4,7 @@ import { systems } from './models/systems.js';
 import { DEFAULT_CONFIG } from './core/gacha/config.js';
 import { extractGachaPageUrl, extractGachaType } from './datasource/gacha-log.js';
 import { recommendCharacter } from './core/recommend.js';
-import { verdictFromScore, scoreFromUtility } from './core/decision/decision.js';
+import { verdictFromScore, scoreFromUtility, deriveWeights } from './core/decision/decision.js';
 import { mctsPlan } from './core/decision/mcts.js';
 import { myAccount } from './data/my-account.js';
 
@@ -16,7 +16,37 @@ const state = {
   resources: { encryptedTapes: 0, polychrome: 0, pity: 0, fails: 0 },
   box: { characters: {} },
   favors: {},
+  weights: null, // 手动权重；null 时按自动模式推导
+  thresholds: { pull: 0.6, consider: 0.4 },
+  autoWeights: true,
 };
+
+// 3.1 版本零氪可获取抽数（样本值，与 core/decision/decision.js 中的 VERSION_RESOURCES 一致）
+const VERSION_RESOURCES = 140;
+
+/** 当前生效权重：自动模式按「版本资源 + 账号欧非」推导，否则用手动值 */
+function currentWeights() {
+  if (state.autoWeights) {
+    return deriveWeights({
+      versionResources: VERSION_RESOURCES,
+      avgPity: myAccount.luck.avgPullsPerAgentS, // 80.4 抽/S，偏非 → λ_risk 上调
+    });
+  }
+  return state.weights;
+}
+
+function renderWeights() {
+  const w = currentWeights();
+  $('w-combat').value = w.alphaCombat;
+  $('w-favor').value = w.alphaFavor;
+  $('w-risk').value = Math.round(w.lambdaRisk * 100) / 100;
+  $('w-cost').value = Math.round(w.alphaCost * 1000) / 1000;
+  $('t-pull').value = state.thresholds.pull;
+  $('t-consider').value = state.thresholds.consider;
+  $('w-auto').checked = state.autoWeights;
+  $('w-risk').disabled = state.autoWeights;
+  $('w-cost').disabled = state.autoWeights;
+}
 
 function renderResources() {
   const r = state.resources;
@@ -58,8 +88,9 @@ function renderResults() {
         systems,
         bannerCfg: cfg,
         favor,
+        weights: currentWeights(),
       });
-      const verdict = verdictFromScore(scoreFromUtility(r.utility));
+      const verdict = verdictFromScore(scoreFromUtility(r.utility), state.thresholds);
       results.push({
         banner,
         characterId: t.id,
@@ -246,11 +277,45 @@ function bindEvents() {
   $('load-my-account').addEventListener('click', loadMyAccount);
   $('run-mcts').addEventListener('click', runMcts);
   bindImportPanel();
+
+  // 权重面板：改动（失焦）即时生效；任何手动改动切换为手动模式
+  document.addEventListener('change', (event) => {
+    const id = event.target.id;
+    if (['w-combat', 'w-favor', 'w-risk', 'w-cost'].includes(id)) {
+      if (state.autoWeights) {
+        state.autoWeights = false;
+        state.weights = { ...currentWeights() };
+      }
+      if (id === 'w-combat') state.weights.alphaCombat = Number(event.target.value) || 0;
+      if (id === 'w-favor') state.weights.alphaFavor = Number(event.target.value) || 0;
+      if (id === 'w-risk') state.weights.lambdaRisk = Number(event.target.value) || 0;
+      if (id === 'w-cost') state.weights.alphaCost = Number(event.target.value) || 0;
+      renderWeights();
+      renderResults();
+    } else if (id === 't-pull' || id === 't-consider') {
+      state.thresholds[id === 't-pull' ? 'pull' : 'consider'] = Number(event.target.value) || 0;
+      renderResults();
+    } else if (id === 'w-auto') {
+      state.autoWeights = event.target.checked;
+      if (!state.autoWeights && !state.weights) state.weights = { ...currentWeights() };
+      renderWeights();
+      renderResults();
+    }
+  });
+
+  $('reset-weights').addEventListener('click', () => {
+    state.weights = null;
+    state.autoWeights = true;
+    state.thresholds = { pull: 0.6, consider: 0.4 };
+    renderWeights();
+    renderResults();
+  });
 }
 
 renderResources();
 renderBox();
 renderPools();
 renderResults();
+renderWeights();
 runMcts();
 bindEvents();
