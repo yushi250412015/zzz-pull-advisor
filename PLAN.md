@@ -27,12 +27,12 @@
 - Kalman 多观测（weightedObservation/kalmanFilterSeries）：kalmanStep 已在 meta 后验中使用
 - parse.js（parseGachaHistory/computeLuckStats）：P5 早期 API，与 import-summary.js 功能重叠，保留测试待统一
 
-### 下一步计划（v2.1）
-1. 希格莉德倍率补全（BWIKI 页修复或视频内数值出现时）
-2. 观测源持续消化（毕加丶潜能觉醒系列/年度T0榜结论）
-3. 音擎/邦布价值参数敏感性校准（有实测数据后）
-4. UI 层 jsdom 测试 / 移动端适配（C 方向，低优先级）
-5. 3.2 版本数据更新（SOP：update-banners.mjs）
+### 下一步计划（v2.1）（2026-08 推进一轮，状态见 CHANGELOG 与 docs/data-sources.md）
+1. ~~希格莉德倍率补全~~ ✅ GachaBase 测试服 datamined 已补全（data-sources.md §13）；HHW 521 / Icy Veins 403 待恢复后交叉复核；实装 08-19 后复核数值
+2. ~~观测源持续消化~~ ✅ 年度T0榜已消化（毕加 BV1GUZ1B8E8L，4 条观测，§12.9）；⏳ 毕加/卡特亚视频库其余条目待逐条取结论
+3. 音擎/邦布价值参数敏感性校准（有实测数据后；scripts/sensitivity-equipment.mjs 已就绪）
+4. UI 层 jsdom 测试 ✅（前轮 +8）/ 移动端适配 ✅（560px 断点增强；可继续按需优化）
+5. ~~3.2 版本数据更新~~ ⏳ SOP 已演练确认 3.2 未进窗口（3.1 至 09/09）；等 3.2 公告进窗口后执行
 
 ## 0.1 一句话定位（v1 原文）
 
