@@ -40,14 +40,14 @@ function randomBudget(pulls, rng) {
   return opts[Math.floor(rng() * opts.length)];
 }
 
-/** 从初始状态按 node.budgets + 随机补全，完整模拟一遍抽卡，返回最终效用 */
-function rollout(node, initialState, rng) {
+/** 从初始状态按 node.budgets + 随机补全，完整模拟一遍抽卡，返回最终效用（价值口径由 valueFn 决定） */
+function rollout(node, initialState, rng, valueFn) {
   let state = { ...initialState, box: { characters: { ...initialState.box.characters } } };
   for (let i = 0; i < initialState.banners.length; i += 1) {
     const budget = i < node.budgets.length ? node.budgets[i] : randomBudget(state.pulls, rng);
     state = step(state, budget, rng);
   }
-  return boxUtility(state.box, state.systems);
+  return valueFn(state.box, state.systems);
 }
 
 function createNode(budgets, pulls, actions, parent = null) {
@@ -68,8 +68,13 @@ function select(node, explorationWeight) {
 
 /**
  * 运行 MCTS，返回根节点每个「首个卡池预算」动作的访问次数与平均收益。
+ * valueFn(box, systems) 为评估口径，默认 boxUtility（θ 体系收益）；
+ * 可注入 boxCombatValue（θ + meta 先验）等自定义口径。
  */
-export function mctsPlan(initialState, { iterations = 1000, explorationWeight = 1.4, rng = Math.random } = {}) {
+export function mctsPlan(
+  initialState,
+  { iterations = 1000, explorationWeight = 1.4, rng = Math.random, valueFn = boxUtility } = {},
+) {
   const root = createNode([], initialState.pulls, budgetOptions(initialState.pulls));
 
   for (let i = 0; i < iterations; i += 1) {
@@ -89,7 +94,7 @@ export function mctsPlan(initialState, { iterations = 1000, explorationWeight = 
       node = child;
     }
 
-    const value = rollout(node, initialState, rng);
+    const value = rollout(node, initialState, rng, valueFn);
 
     let cur = node;
     while (cur) {

@@ -6,6 +6,10 @@
 
 ### 新增
 
+- **【B·建模修正】meta 先验接入引擎（修复重大建模洞）**：此前 θ 体系增益只覆盖有体系数据的角色，琉音/希格莉德/千夏等 T0 角色边际效用恒 0；新增 `metaUtility / metaUtilityOfBox / boxCombatValue`（meta/100 × metaScale，可学习参数默认 5，与体系 delta_max 同量级；meta=null 贡献 0 不臆造）；`recommendCharacter` 增加可选 `characters` 参数（缺省保持纯 θ 行为，新旧行为各有测试）；`mctsPlan` 增加 `valueFn` 依赖注入（默认 boxUtility，种子断言不变）；UI 两处统一改用 θ+meta 口径；单测 +7（meta-utility 6 + recommend 1）
+- **【A·数据完备化】希格莉德博主实测核实**：骁骑礼赞配对 `inferred → verified`（游侠网 + niubi.wiki 两篇独立攻略同款专属音擎：713 攻/48% 爆伤、冰伤被动「骨寒」；博主译名「骑士颂赞」）；机制入档（【骑士专注】/三段蓄力/【敛枪式】）；meta 维持 82；具体倍率两文未给出 → 不臆造，全量表以 BWIKI 页为准
+- **【A·数据完备化】角色机制速查库**：`src/data/mechanics.js`（12 位角色：机制摘要/关键技能/推荐配队/来源逐条标注，无源不收录、无出处倍率标 null）+ 结构单测 + UI「角色机制速查」面板（wiki 倍率表链接）；`docs/data-sources.md` §11 入档
+- 测试 112 项（+9：meta-utility 6 + recommend 1 + mechanics 2）
 - **【B·决策深化】帕累托策略集进 UI**：`buildPullStrategies` 纯函数（离散预算 25/50/75/100% 下的策略，目标向量 [效用, −风险, −成本]，`paretoFrontier` 筛选）+ 单测 4 项（含前沿互不支配与风险单调性断言）；角色推荐卡片展示「帕累托最优预算」
 - **【A·数据完备化】官方情报面板**：`src/data/official-facts.js` 静态快照（3.1 官方公告官方陈述，标注快照日期与来源 ann_id，推断项如骁骑礼赞归属显式标注）+ UI 面板（版本/时间窗/代理人/音擎/邦布 + BWIKI wiki 链接）；静态快照规避浏览器 CORS
 - **【A·数据完备化】数据更新 SOP**：`docs/data-sources.md` §10 补充「新版本数据更新 SOP」（update-banners → 人工审阅 → 数据文件 → 测试/构建 → commit/push）；README 状态刷新（103 项测试与新功能清单）

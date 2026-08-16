@@ -360,3 +360,36 @@ h1 {
 .mcts-scenario-result {
   margin-top: 8px;
 }
+
+.mech-card .mech-summary {
+  font-size: 13px;
+  color: #334155;
+  margin-top: 6px;
+}
+
+.mech-card .mech-skills {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mech-skill {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+}
+
+.mech-card .mech-team {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 6px;
+}
+
+.mech-wiki {
+  font-size: 12px;
+  color: #4338ca;
+}

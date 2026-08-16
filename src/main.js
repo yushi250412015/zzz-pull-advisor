@@ -2,12 +2,14 @@ import { characters } from './data/characters.js';
 import { banners } from './data/banners.js';
 import { systems } from './models/systems.js';
 import { DEFAULT_CONFIG } from './core/gacha/config.js';
+import { boxCombatValue } from './core/utility/utility.js';
 import { extractGachaPageUrl, extractGachaType } from './datasource/gacha-log.js';
 import { recommendEquipment, EQUIPMENT_DEFAULTS } from './core/recommend-equipment.js';
 import { buildPullStrategies } from './core/decision/pull-strategies.js';
 import { buildPlanningScenarios } from './core/decision/planning.js';
 import { weapons, bangboos } from './data/equipment.js';
 import { officialFacts } from './data/official-facts.js';
+import { mechanics } from './data/mechanics.js';
 import { buildWikiUrl } from './datasource/announcement.js';
 import { recommendCharacter } from './core/recommend.js';
 import { verdictFromScore, scoreFromUtility, deriveWeights } from './core/decision/decision.js';
@@ -96,6 +98,7 @@ function renderResults() {
         bannerCfg: cfg,
         favor,
         weights: currentWeights(),
+        characters,
       });
       const verdict = verdictFromScore(scoreFromUtility(r.utility), state.thresholds);
       const frontier = buildPullStrategies({
@@ -213,6 +216,33 @@ function renderOfficialFacts() {
     '<ul><li>全新代理人：<ul>' + agentRows + '</ul></li>' +
     '<li>全新音擎：<ul>' + engineRows + '</ul></li>' +
     '<li>全新邦布：<ul>' + bangbooRows + '</ul></li></ul>';
+}
+
+// —— 角色机制速查（mechanics.js，官方/BWIKI/博主口径摘要；全量倍率表走 wiki 链接） ——
+function renderMechanics() {
+  const cards = Object.values(mechanics)
+    .map((m) => {
+      const c = characters[m.characterId];
+      const skills = m.keySkills.map((s) => '<span class="mech-skill">' + s + '</span>').join('');
+      const sources = m.sources
+        .map((s) => {
+          const urlMatch = s.match(/^(https?:\/\/[^\s（]+)/);
+          return urlMatch ? '<a href="' + urlMatch[1] + '" target="_blank" rel="noopener">' + s.replace(/^https?:\/\/[^\s（]+/, '来源') + '</a>' : s;
+        })
+        .join(' · ');
+      return (
+        '<div class="card mech-card">' +
+        '<div class="head"><span class="name">' + c.name + '（' + c.rarity + '·' + (ELEMENT_LABEL[c.element] || '?') + '·' + (ROLE_LABEL[c.role] || '?') + '）</span>' +
+        '<a class="mech-wiki" href="' + buildWikiUrl(c.name) + '" target="_blank" rel="noopener">倍率表 → wiki</a></div>' +
+        '<div class="mech-summary">' + m.summary + '</div>' +
+        '<div class="mech-skills">' + skills + '</div>' +
+        (m.team ? '<div class="mech-team">推荐配队：' + m.team + '</div>' : '') +
+        '<div class="hint">' + sources + '</div>' +
+        '</div>'
+      );
+    })
+    .join('');
+  $('mechanics-panel').innerHTML = cards;
 }
 
 // —— 从记录实时导入：上传日志 → 提取抽卡 H5 页面 URL（抓取仍需本地脚本，浏览器直连会被 CORS 拦截） ——
@@ -333,7 +363,11 @@ function runScenario(id) {
     box: state.box,
     systems,
   };
-  const result = mctsPlan(initialState, { iterations });
+  // 评估口径：θ 体系成型收益 + meta 先验项（与推荐卡一致，避免无体系角色被 MCTS 低估）
+  const result = mctsPlan(initialState, {
+    iterations,
+    valueFn: (box, sys) => boxCombatValue(box, sys, characters),
+  });
   const best = result.reduce((a, b) => (a.avgValue > b.avgValue ? a : b));
   const futureName = characters[scenario.futureTargetId].name;
   const describe = (r) =>
@@ -434,6 +468,7 @@ renderPools();
 renderResults();
 renderEquipmentResults();
 renderOfficialFacts();
+renderMechanics();
 renderWeights();
 renderMctsScenarios();
 bindEvents();

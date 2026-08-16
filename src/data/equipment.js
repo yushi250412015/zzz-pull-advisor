@@ -18,8 +18,8 @@ export const weapons = {
     rarity: 'S',
     role: 'attack',
     ownerId: 'sigrid',
-    pairing: 'inferred',
-    note: '官方公告 3.1「骁骑礼赞」频段（强攻 S 音擎）；按定位推断为希格莉德专武，BWIKI 页面尚未建（08-19 实装后核实）',
+    pairing: 'verified',
+    note: '官方公告 3.1「骁骑礼赞」频段（强攻 S 音擎）；希格莉德专属音擎（多源：游侠网/niubi.wiki 培养指南，713 攻/48% 爆伤、冰伤被动；博主文中译名「骑士颂赞」）',
   },
 };
 

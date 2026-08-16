@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { recommendCharacter } from '../src/core/recommend.js';
 import { systems } from '../src/models/systems.js';
+import { characters } from '../src/data/characters.js';
 import { DEFAULT_CONFIG } from '../src/core/gacha/config.js';
 
 const base = {
@@ -31,5 +32,12 @@ describe('recommendCharacter', () => {
     const few = recommendCharacter({ ...base, resources: { ...base.resources, encryptedTapes: 10 } });
     const many = recommendCharacter({ ...base, resources: { ...base.resources, encryptedTapes: 90 } });
     expect(few.risk).toBeGreaterThan(many.risk);
+  });
+
+  it('传入 characters 时叠加 meta 先验项（无体系角色也有正值）；缺省保持纯 θ', () => {
+    const withMeta = recommendCharacter({ ...base, characterId: 'rinna', characters });
+    const noMeta = recommendCharacter({ ...base, characterId: 'rinna' });
+    expect(noMeta.combatDelta).toBe(0); // rinna 不在任何体系，纯 θ 口径为 0
+    expect(withMeta.combatDelta).toBeGreaterThan(0); // meta 90 → 4.5
   });
 });
