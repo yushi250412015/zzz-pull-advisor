@@ -4,7 +4,7 @@
 
 export const banners = [
   { id: 'b-remielle', version: '3.1', characterId: 'remielle', type: 'character', phase: 'current', note: '上半新角色·流明异常' },
-  { id: 'b-aria', version: '3.1', characterId: 'aria', type: 'character', phase: 'current', note: '上半复刻·冰异放主C' },
+  { id: 'b-aria', version: '3.1', characterId: 'aria', type: 'character', phase: 'current', note: '上半复刻·以太异放主C' },
   { id: 'b-sigrid', version: '3.1', characterId: 'sigrid', type: 'character', phase: 'second-half', note: '下半新角色·冰强攻' },
   {
     id: 'b-mixed',

@@ -137,6 +137,8 @@
 
 ### 4.16 数据文件
 - `src/data/characters.js`：39 位角色。字段 `{id, name, rarity, element, role, meta, standard?, coreTeammates?, note?}`；`meta` 为 0-100 占位强度分（`null`=未知）；`standard: true` 表示常驻 S（50/50 歪池）；导出 `standardS` = Set(常驻 S 角色名)。已知情报：千夏（妄想天使·泛用辅助，元素待核实）、南宫羽（以太/击破，2.7）、普罗米娅（冰/异常·异放体系，2.8）、维琳娜（风/异常·染色，3.0）、爱芮（冰/异常·异放主C，2.6）、蕾米埃尔（流明/异常，初代虚狩，**流变机制**=随下位队友切伤害属性，3.1）、波可娜=Pulchra（物理/击破 A）、真斗=狛野真斗 A（2.3，属性定位待核实）、潘引壶 A（2.0，待核实）；常驻 S：丽娜/猫又/莱卡恩/格莉丝/11号。
+
+> **勘误（2026-08 接手后核实，详见 `docs/data-sources.md`）**：爱芮为**以太/异常**（BWIKI：<https://wiki.biligame.com/zzz/爱芮>），本文「冰/异常·异放主C」有误；「冰属性爱芮」是 2.8 普罗米娅的社区昵称。千夏=限定S·物理·支援、真斗=常驻A·火·**命破**（Rupture，2.3 新增第 6 定位）、潘引壶=常驻A·物理·防护。
 - `src/data/banners.js`：3.1 卡池——上半 `b-remielle` + `b-aria`（复刻）；下半 `b-sigrid` + `b-mixed`（`selectable:['rinna','yuzuha','harumasa']`，`firstGoldGuaranteed:true` → UI 用 `rateUpChance:1` 覆盖）。
 - `src/data/my-account.js`：用户真实账号（见 §6）。
 - `src/models/systems.js`：7 个体系先验（ice-attack / ether / anomaly / wind-anomaly / lumiflux-anomaly / ice-anomaly / physical-attack），各含 `{F_min, delta_max, k, contributions}`；贡献向量为**待校准先验**。

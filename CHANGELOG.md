@@ -6,6 +6,12 @@
 
 ### 新增
 
+- **公告数据源模块**（`src/datasource/announcement.js`）：官方公告 API 实测封装（getAnnList/getAnnContent；实测 title 带 `<p>` 包裹、type_label 在组级、getAnnContent 返回全量列表需按 ann_id 自行筛选）；`stripHtml` / 归一化 / 关键词过滤 / 角色名匹配 / 正文提及检索（`findCharacterMentions`）+ BWIKI wiki 直链（实测 200）；真实返回快照存 `docs/data/ann-*.json`（gitignore）；单测 14 项（mock fetch + 真实结构样本）
+- **角色资料核实与体系修正（千夏/真斗/潘引壶 + 勘误，多源交叉验证）**：千夏 = 限定S · 物理 · 支援（2.6）；真斗 = 常驻A · **火 · 命破**（2.3，狛野真斗 / Komano Manato）；潘引壶 = 常驻A · 物理 · 防护（2.0）；`ROLES` 新增第 6 定位 `rupture`（官方简中「命破」，英文社区通用名 Rupture，待官方英文公告最终确认）；**勘误：爱芮 = 以太/异常（原误记「冰」；「冰属性爱芮」实为 2.8 普罗米娅的社区昵称）**，banners / 体系同步修正；来源与置信度记录于 `docs/data-sources.md`
+- **meta 强度分校准（Prydwen tier list，2026-08）**：换算规则 T0=90 / T0.5=82 / T1=72 / T2=62 / T3=50（例外与冲突在角色 note 注明），20 位角色已校准；`systems.contributions` 同步校准：lumiflux-anomaly + 维琳娜、新增 `rupture`（命破）体系、新增 `ether-anomaly`（爱芮）、ice-anomaly 移出爱芮、anomaly + 苍角（雅狼苍/雅柚苍）；换算规则与全部来源见 `docs/data-sources.md`
+- **MCTS 时序规划接 UI**：新增「现在抽 vs 攒希格莉德」卡片（`mctsPlan` 接当前资源/box，迭代数 200~5000 可调；展示各预算动作的平均成型收益、访问次数与最优结论；声明只优化成型收益、随机波动可重跑）
+- **四池状态进 UI**：新增「我的真实账号 · 四池状态」面板（独家/常驻/音擎/邦布的累计抽数、距上次 S、S 级历史列表）；`my-account.js` 的 `sList` 升级为结构化历史（名称/日期/歪/数量）
+- 测试 79 项（+14 公告数据源）
 - **全量四池账号解析**（uid 25183553，2026-08-15）：常驻 109 / 独家 454 / **音擎 189 / 邦布 416**，共 1168 条；`my-account.js` 含四池保底与 S 级列表
 - **数据源实测校准**（`gacha-log.js` 重写）：真实日志格式为抽卡 H5 页面 URL（webstatic.mihoyo.com/...gacha-v2/index.html）；authkey 须用**原始百分号编码形态**拼接（解码后 `+` 会被当作空格 → retcode=-1 illegal base64）；记录内 `gacha_type` 为 API 内部编码 1/2/3/5（请求参数 1001/2001/3001/5001）；新增 `extractGachaPageUrl`/`extractAuthkey`/`buildApiUrl`
 - 测试 65 项（+4 数据源格式测试）
@@ -19,8 +25,9 @@
 
 ### 待办
 
-- 千夏、真斗、潘引壶的属性/定位待核实；全部 meta 强度分待社区数据校准
-- 算法选型：确定是否加 **MCTS 时序规划器**（现在抽 vs 攒给下版本）——已实现基础版，待接入 UI
+- 剩余角色 `meta` 待校准（维琳娜、比利、可琳、安东、本 等；艾莲/朱鸢/星见雅仍为旧占位先验 85/80/92）
+- 音擎 / 邦布池的「抽卡推荐」（当前仅展示四池状态）；「从抽卡记录实时导入」全流程 UI
+- 六维评价向量、Kalman 观测接入的真实数据流（低优先级）
 
 ## [0.1.0] - 2026-08-15
 

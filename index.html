@@ -28,8 +28,24 @@
       </section>
 
       <section class="panel">
+        <h2>我的真实账号 · 四池状态（uid 25183553 · 2026-08-15 解析）</h2>
+        <div id="pools-list"></div>
+        <p class="hint">音擎 / 邦布池为真实抽卡记录解析结果，仅作状态参考；音擎 / 邦布的「抽卡推荐」待后续版本接入。</p>
+      </section>
+
+      <section class="panel">
         <h2>推荐结果</h2>
         <div id="results-list"></div>
+      </section>
+
+      <section class="panel">
+        <h2>时序规划 · MCTS：现在抽 vs 攒希格莉德</h2>
+        <p class="hint">比较「现在把预算投入上半池（蕾米埃尔）各比例」与「全部攒给下半希格莉德」的平均成型收益（基于当前 box 与体系先验）。</p>
+        <div class="mcts-controls">
+          <label>迭代次数 <input type="number" id="mcts-iterations" min="200" max="5000" step="100" value="1000" /></label>
+          <button id="run-mcts" type="button">运行 MCTS 规划</button>
+        </div>
+        <div id="mcts-result"></div>
       </section>
     </div>
     <script type="module" src="/src/main.js"></script>

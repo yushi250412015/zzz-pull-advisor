@@ -20,6 +20,15 @@ export const myAccount = {
     sCount: 6,
     losses: 1, // 猫又（常驻，歪）
     lastS: { name: '蕾米埃尔', time: '2026-07-29 20:12:29' },
+    // S 级历史（时间序，均为 2026 年；猫又为 50/50 歪出的常驻）
+    sList: [
+      { name: '千夏', date: '03-01' },
+      { name: '南宫羽', date: '03-24' },
+      { name: '普罗米娅', date: '05-06' },
+      { name: '猫又', date: '06-17', lost: true },
+      { name: '维琳娜', date: '07-04' },
+      { name: '蕾米埃尔', date: '07-29' },
+    ],
   },
   // 常驻角色池当前状态：距上次 S（丽娜）37 抽
   standard: {
@@ -27,13 +36,18 @@ export const myAccount = {
     pity: 37,
     sCount: 1,
     lastS: { name: '丽娜', time: '2026-06-15 17:44:29' },
+    sList: [{ name: '丽娜', date: '06-15' }],
   },
   // 音擎池：3 把 S 音擎，距上次 S（啜泣摇篮）10 抽
   weapon: {
     pulls: 189,
     pity: 10,
     sCount: 3,
-    sList: ['霓虹妄想', '琳琅鎏心', '啜泣摇篮'],
+    sList: [
+      { name: '霓虹妄想', date: '04-08' },
+      { name: '琳琅鎏心', date: '07-04' },
+      { name: '啜泣摇篮', date: '08-06' },
+    ],
     lastS: { name: '啜泣摇篮', time: '2026-08-06 22:48:28' },
   },
   // 邦布池：8 只 S 邦布，最近一只艾瑞儿（08-10）
@@ -41,7 +55,13 @@ export const myAccount = {
     pulls: 416,
     pity: 0,
     sCount: 8,
-    sList: ['阿饭', '狮耶', '罗宾', '超极杰克', '艾瑞儿'],
+    sList: [
+      { name: '阿饭', count: 3 },
+      { name: '狮耶' },
+      { name: '罗宾' },
+      { name: '超极杰克', count: 2 },
+      { name: '艾瑞儿', date: '08-10' },
+    ],
     lastS: { name: '艾瑞儿', time: '2026-08-10 10:52:21' },
   },
   // 欧非统计（全账号）

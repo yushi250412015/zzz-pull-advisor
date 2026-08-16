@@ -26,7 +26,8 @@ export const systems = {
     F_min: 0.5,
     delta_max: 10,
     k: 5,
-    contributions: { miyabi: 0.7, grace: 0.3 },
+    // 苍角为星见雅最佳队友之一（社区配队「雅狼苍/雅柚苍」）
+    contributions: { miyabi: 0.7, grace: 0.3, soukaku: 0.2 },
   },
   // —— 3.x 新体系（先验占位，待社区配队数据校准） ——
   'wind-anomaly': {
@@ -43,7 +44,8 @@ export const systems = {
     F_min: 0.5,
     delta_max: 12,
     k: 6,
-    contributions: { remielle: 0.85 },
+    // 维琳娜为蕾米埃尔专属售后（社区 T0 配队：蕾米埃尔主C+维琳娜风异常副C；来源 data-sources.md）
+    contributions: { remielle: 0.85, velina: 0.25 },
   },
   'ice-anomaly': {
     id: 'ice-anomaly',
@@ -51,7 +53,16 @@ export const systems = {
     F_min: 0.5,
     delta_max: 10,
     k: 5,
-    contributions: { promya: 0.7, aria: 0.3 },
+    // 爱芮已移出：其属性实为以太（BWIKI），入 'ether-anomaly'；「冰属性爱芮」是普罗米娅的社区昵称
+    contributions: { promya: 0.7 },
+  },
+  'ether-anomaly': {
+    id: 'ether-anomaly',
+    label: '以太异常（异放）',
+    F_min: 0.5,
+    delta_max: 10,
+    k: 5,
+    contributions: { aria: 0.8 },
   },
   'physical-attack': {
     id: 'physical-attack',
@@ -60,5 +71,15 @@ export const systems = {
     delta_max: 10,
     k: 5,
     contributions: { nekomata: 0.7, pulchra: 0.3 },
+  },
+  // 2.3 命破体系（社区通解模板：命破C+击破+卢西娅；卢西娅未录入角色库，用其下位替代潘引壶；
+  // 来源 data-sources.md）
+  rupture: {
+    id: 'rupture',
+    label: '命破（贯穿）',
+    F_min: 0.5,
+    delta_max: 10,
+    k: 5,
+    contributions: { manato: 0.7, 'pan-yinhu': 0.3 },
   },
 };
