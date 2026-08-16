@@ -17,4 +17,6 @@ export const officialFacts = {
     { name: '骁骑礼赞', role: 'attack', channel: '骁骑礼赞', owner: '推断为希格莉德专武（08-19 实装后核实）' },
   ],
   bangboos: [{ name: '艾瑞儿', channel: '卓越搭档', note: '以太 · 达识结社 · 蕾米埃尔阵营（BWIKI）' }],
+  // 官方 3.1 公告正文提及的角色（2026-08-16 快照，findCharacterMentions 同口径）
+  mentionedCharacters: ['蕾米埃尔', '希格莉德', '爱芮', '普罗米娅', '丽娜', '安比', '比利', '派派', '露西', '本', '真斗', '星见雅'],
 };

@@ -4,7 +4,7 @@
 const EXPECTED_PITY = 62; // 理论期望保底（0.6% 基础 + 软保底）
 const RISK_BASE = 30; // 正常欧非下的风险厌恶系数
 const COST_BASE = 20; // 机会成本基准：花光整个版本资源约 −20 效用
-const VERSION_RESOURCES = 140; // 3.1 版本零氪可获取抽数（样本值，随版本更新）
+export const VERSION_RESOURCES = 140; // 3.1 版本零氪可获取抽数（样本值，随版本更新；main.js 与 deriveWeights 共用此单一来源）
 
 /** 默认决策权重 = 3.1 版本 + 正常欧非的推导结果 */
 export const DEFAULT_DECISION_WEIGHTS = {

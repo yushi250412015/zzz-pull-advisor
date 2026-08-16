@@ -26,23 +26,25 @@ export function marginalUtility(box, characterId, systems) {
 // metaScale 为可学习参数（默认 5，量级与体系 delta_max 10-12 可比）；meta=null（未知）贡献 0，不臆造。
 export const META_UTILITY_DEFAULTS = { metaScale: 5 };
 
-/** 单角色 meta 先验项：meta/100 × metaScale；meta 为 null 时 0 */
-export function metaUtility(character, params = META_UTILITY_DEFAULTS) {
-  const meta = character && character.meta;
+/** 单角色 meta 先验项：meta/100 × metaScale；meta 为 null 时 0；metaOverride 传后验 μ 时优先用它 */
+export function metaUtility(character, params = META_UTILITY_DEFAULTS, metaOverride = null) {
+  const meta = metaOverride != null ? metaOverride : character && character.meta;
   if (meta == null) return 0;
   return (meta / 100) * params.metaScale;
 }
 
-/** box 内全部角色的 meta 先验项之和 */
-export function metaUtilityOfBox(box, characters, params = META_UTILITY_DEFAULTS) {
+/** box 内全部角色的 meta 先验项之和；metaMap（角色 id → 后验 μ）存在时优先后验 */
+export function metaUtilityOfBox(box, characters, params = META_UTILITY_DEFAULTS, metaMap = null) {
   let sum = 0;
   for (const c of Object.values(characters)) {
-    if (box.characters[c.id] && box.characters[c.id].owned) sum += metaUtility(c, params);
+    if (box.characters[c.id] && box.characters[c.id].owned) {
+      sum += metaUtility(c, params, metaMap ? metaMap[c.id] : null);
+    }
   }
   return sum;
 }
 
-/** box 综合战力值 = θ 体系成型收益 + meta 先验项（MCTS 等优化目标的推荐口径） */
-export function boxCombatValue(box, systems, characters, params = META_UTILITY_DEFAULTS) {
-  return boxUtility(box, systems) + metaUtilityOfBox(box, characters, params);
+/** box 综合战力值 = θ 体系成型收益 + meta 项（后验优先；MCTS 等优化目标的推荐口径） */
+export function boxCombatValue(box, systems, characters, params = META_UTILITY_DEFAULTS, metaMap = null) {
+  return boxUtility(box, systems) + metaUtilityOfBox(box, characters, params, metaMap);
 }

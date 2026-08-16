@@ -40,4 +40,9 @@ describe('recommendCharacter', () => {
     expect(noMeta.combatDelta).toBe(0); // rinna 不在任何体系，纯 θ 口径为 0
     expect(withMeta.combatDelta).toBeGreaterThan(0); // meta 90 → 4.5
   });
+
+  it('metaMap 后验优先于先验 meta', () => {
+    const withPosterior = recommendCharacter({ ...base, characterId: 'rinna', characters, metaMap: { rinna: 80 } });
+    expect(withPosterior.combatDelta).toBeCloseTo((80 / 100) * 5);
+  });
 });

@@ -140,6 +140,7 @@
 
 > **勘误（2026-08 接手后核实，详见 `docs/data-sources.md`）**：爱芮为**以太/异常**（BWIKI：<https://wiki.biligame.com/zzz/爱芮>），本文「冰/异常·异放主C」有误；「冰属性爱芮」是 2.8 普罗米娅的社区昵称。千夏=限定S·物理·支援、真斗=常驻A·火·**命破**（Rupture，2.3 新增第 6 定位）、潘引壶=常驻A·物理·防护。
 > **勘误 2（2026-08，记录排序）**：§6 表中独家池「距上次 S 0 抽」有误，实为 **3 抽**——蕾米埃尔是 07-29 十连的第 7 抽，其后同秒还有 3 抽；邦布池「≈0」实为 **4 抽**（艾瑞儿为 08-10 十连第 6 抽）。根因：抽卡记录 API 同秒批量返回（十连记录 time 完全相同），排序必须用 **(time, id)** 打破平局，已修正 `parse.js` 与 `src/datasource/import-summary.js`。
+> **勘误 3（2026-08 再审视）**：本文多处「39 位角色」有误，实际为 **31 位**（18 S + 13 A）；当前计划与架构请以 `PLAN.md` v2 为准。
 - `src/data/banners.js`：3.1 卡池——上半 `b-remielle` + `b-aria`（复刻）；下半 `b-sigrid` + `b-mixed`（`selectable:['rinna','yuzuha','harumasa']`，`firstGoldGuaranteed:true` → UI 用 `rateUpChance:1` 覆盖）。
 - `src/data/my-account.js`：用户真实账号（见 §6）。
 - `src/models/systems.js`：7 个体系先验（ice-attack / ether / anomaly / wind-anomaly / lumiflux-anomaly / ice-anomaly / physical-attack），各含 `{F_min, delta_max, k, contributions}`；贡献向量为**待校准先验**。

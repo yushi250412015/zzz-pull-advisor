@@ -6,6 +6,8 @@
 
 ### 新增
 
+- **【再审视与计划 v2】项目重新审视 + P0/P1 修正**：①**后验接入引擎**（可信度面板的 Kalman 后验此前只展示不参与计算——现已统一：metaUtility/recommendCharacter/MCTS 共用 metaMap，+2 单测）；②配置单源（VERSION_RESOURCES 从 decision.js 导出）；③欧非统计进 UI（四池面板）；④官方公告提及角色接线（官方情报面板）；⑤文档同步（PLAN.md v2 再审视结论与计划、README 129 项测试与功能清单、HANDOVER 勘误 3：角色数 39→31）
+- 测试 129 项（+2 后验覆盖）
 - **【批量消化观测源】14 条视频结论落库**：`scripts/bili-batch.mjs`（批量简介+热评）；毕加丶/卡特亚 14 条视频结论提取——维琳娜+蕾米埃尔为**官方推荐配队**（佐证体系校准）、琉音「赠送大招/排轴要求高」、南宫羽「三小只强度不低/爱芮双连携」、爱芮「法厄同平替专盘/0+0 够用」、普罗米娅「卡特亚自承配队测试不足」；新增 `bili-comments` 观测源（trust 0.45）+ 星见雅衰落冲突观测 70（两条独立评论交叉，后验 92→88.37）；mechanics 新增琉音/星见雅条目并增补 4 角色 facts；希格莉德 BWIKI 倍率表仍空 → 维持 null 不臆造
 - **【登录会话解锁】B站全接口打通（用户授权 cookie）**：`scripts/bili-session.mjs` 支持 search（wbi 搜索）/space（作者列表）/comments（评论，ps≤20）/summary/subtitle；cookie 存 `%TEMP%\zzz-bili-cookie.txt`（不进仓库）；实测解锁搜索与空间列表（毕加丶绝区零系列全部可见）；AI 总结需 UP 权限、AI 字幕服务当前错配内容不可信（如实记录 data-sources.md §12.4）
 - **【实测事实落库】希格莉德（评论区口径，逐条单源标注）**：专武与下位差距 20%+、弹刀触发最高倍率第三段枪势、测试服削过大招倍率、0命「低命战神」→ `mechanics.js` facts + `equipment.js` note；毕加丶视频库清单入档待逐条取结论

@@ -13,13 +13,15 @@ import { totalUtility, opportunityCost } from './decision/decision.js';
  * @param {object} input.bannerCfg 卡池配置
  * @param {number} input.favor 主观喜好分
  * @param {object} [input.weights] 决策权重
- * @param {object} [input.characters] 角色库（含 meta）：传入时 combatDelta 叠加 meta 先验项；缺省保持纯 θ 行为
+ * @param {object} [input.characters] 角色库（含 meta）：传入时 combatDelta 叠加 meta 项；缺省保持纯 θ 行为
+ * @param {object} [input.metaMap] 角色 id → Kalman 后验 μ：优先于 characters.meta（与可信度面板一致）
  */
-export function recommendCharacter({ box, resources, characterId, systems, bannerCfg, favor, weights, characters }) {
+export function recommendCharacter({ box, resources, characterId, systems, bannerCfg, favor, weights, characters, metaMap }) {
   const pulls = (resources.encryptedTapes || 0) + Math.floor((resources.polychrome || 0) / 160);
   const risk = 1 - probabilityOfRateUp(pulls, bannerCfg, { pity: resources.pity || 0, fails: resources.fails || 0 });
   const combatDelta =
-    marginalUtility(box, characterId, systems) + (characters ? metaUtility(characters[characterId]) : 0);
+    marginalUtility(box, characterId, systems) +
+    (characters ? metaUtility(characters[characterId], undefined, metaMap ? metaMap[characterId] : null) : 0);
   const cost = opportunityCost(pulls);
   const utility = totalUtility({ combatDelta, favor, risk, opportunityCost: cost, weights });
   return { pulls, risk, combatDelta, cost, utility };

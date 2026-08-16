@@ -16,7 +16,7 @@ import { officialFacts } from './data/official-facts.js';
 import { mechanics } from './data/mechanics.js';
 import { buildWikiUrl } from './datasource/announcement.js';
 import { recommendCharacter } from './core/recommend.js';
-import { verdictFromScore, scoreFromUtility, deriveWeights } from './core/decision/decision.js';
+import { verdictFromScore, scoreFromUtility, deriveWeights, VERSION_RESOURCES } from './core/decision/decision.js';
 import { mctsPlan } from './core/decision/mcts.js';
 import { myAccount } from './data/my-account.js';
 
@@ -32,9 +32,6 @@ const state = {
   thresholds: { pull: 0.6, consider: 0.4 },
   autoWeights: true,
 };
-
-// 3.1 版本零氪可获取抽数（样本值，与 core/decision/decision.js 中的 VERSION_RESOURCES 一致）
-const VERSION_RESOURCES = 140;
 
 /** 当前生效权重：自动模式按「版本资源 + 账号欧非」推导，否则用手动值 */
 function currentWeights() {
@@ -81,8 +78,17 @@ function renderBox() {
     .join('');
 }
 
+// 全角色 Kalman 后验表（可信度面板与推荐引擎共用同一口径；每轮渲染重建，代价可忽略）
+function currentMetaMap() {
+  const posteriors = buildMetaPosteriors(characters, observations);
+  const map = {};
+  for (const [id, p] of Object.entries(posteriors)) map[id] = p.mu;
+  return map;
+}
+
 function renderResults() {
   const results = [];
+  const metaMap = currentMetaMap();
   for (const banner of banners) {
     if (banner.type !== 'character') continue; // 音擎/邦布走 renderEquipmentResults
     const targets = banner.selectable
@@ -103,6 +109,7 @@ function renderResults() {
         favor,
         weights: currentWeights(),
         characters,
+        metaMap,
       });
       const verdict = verdictFromScore(scoreFromUtility(r.utility), state.thresholds);
       const frontier = buildPullStrategies({
@@ -195,7 +202,9 @@ function renderPools() {
         </ul>
       </div>`;
     })
-    .join('');
+    .join('') +
+    '<p class="hint">欧非（全账号）：代理人池平均 ' + myAccount.luck.avgPullsPerAgentS +
+    ' 抽/S（期望 62.5 → 偏非）· 独家池胜率 ' + Math.round(myAccount.luck.limitedWinRate * 100) + '% · 全账号 ' + myAccount.luck.totalPulls + ' 抽</p>';
 }
 
 // —— 官方情报（3.1 公告快照，静态数据避免浏览器 CORS） ——
@@ -222,7 +231,8 @@ function renderOfficialFacts() {
     ' · 官方公告 API ann_id ' + f.annId + '（快照 ' + f.fetchedAt + '）</div>' +
     '<ul><li>全新代理人：<ul>' + agentRows + '</ul></li>' +
     '<li>全新音擎：<ul>' + engineRows + '</ul></li>' +
-    '<li>全新邦布：<ul>' + bangbooRows + '</ul></li></ul>';
+    '<li>全新邦布：<ul>' + bangbooRows + '</ul></li>' +
+    '<li>公告正文提及角色：' + (f.mentionedCharacters || []).join('、') + '（核心技改动等）</li></ul>';
 }
 
 // —— 强度可信度（Kalman 多源后验；观测源与权重见 observations.js） ——
@@ -390,10 +400,11 @@ function runScenario(id) {
     box: state.box,
     systems,
   };
-  // 评估口径：θ 体系成型收益 + meta 先验项（与推荐卡一致，避免无体系角色被 MCTS 低估）
+  // 评估口径：θ 体系成型收益 + meta 后验项（与推荐卡同一 metaMap 口径）
+  const metaMap = currentMetaMap();
   const result = mctsPlan(initialState, {
     iterations,
-    valueFn: (box, sys) => boxCombatValue(box, sys, characters),
+    valueFn: (box, sys) => boxCombatValue(box, sys, characters, undefined, metaMap),
   });
   const best = result.reduce((a, b) => (a.avgValue > b.avgValue ? a : b));
   const futureName = characters[scenario.futureTargetId].name;

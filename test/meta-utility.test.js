@@ -30,6 +30,15 @@ describe('metaUtility（meta 先验接入，2026-08 建模修正）', () => {
     expect(boxCombatValue(box, systems, characters)).toBeCloseTo(boxUtility(box, systems) + 4.5);
     expect(boxCombatValue({ characters: {} }, systems, characters)).toBe(0);
   });
+
+  it('metaMap 后验覆盖先验（引擎与可信度面板同口径）', () => {
+    const box = { characters: { miyabi: { owned: true } } };
+    const metaMap = { miyabi: 88.37 };
+    expect(metaUtility(characters.miyabi, undefined, 88.37)).toBeCloseTo((88.37 / 100) * 5);
+    expect(boxCombatValue(box, systems, characters, undefined, metaMap)).toBeCloseTo(
+      boxUtility(box, systems) + (88.37 / 100) * 5,
+    );
+  });
 });
 
 describe('mctsPlan valueFn 注入', () => {
