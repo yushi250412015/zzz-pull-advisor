@@ -41,6 +41,18 @@ describe('parseGachaHistory', () => {
     expect([...r.box]).toEqual(expect.arrayContaining(['蕾米埃尔', '安东']));
   });
 
+  it('同秒批量返回时按 id 打破平局（实测：一次十连的记录 time 相同）', () => {
+    const records = [
+      { name: '「月相」-望', rank_type: '2', item_type: '音擎', time: 't', id: '001' },
+      { name: '蕾米埃尔', rank_type: '4', time: 't', id: '007' }, // 十连第 7 抽
+      { name: '「月相」-望', rank_type: '2', item_type: '音擎', time: 't', id: '008' },
+      { name: '安东', rank_type: '3', time: 't', id: '009' },
+    ];
+    const r = parseGachaHistory(records, standard);
+    expect(r.pity).toBe(2); // 蕾米埃尔之后 2 抽
+    expect(r.box.size).toBe(2); // 音擎不入 box
+  });
+
   it('sRankType 可配置（兼容 5=S 的通用数据源）', () => {
     const records = [
       { name: 'A', rank_type: '5', time: 't1' },

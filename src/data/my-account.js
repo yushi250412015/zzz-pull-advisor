@@ -12,10 +12,11 @@ export const myAccount = {
     'anby', 'nicole', 'billy', 'corin', 'piper', 'lucy', 'seth', 'anton', 'ben',
     'soukaku', 'pulchra', 'manato', 'pan-yinhu',
   ],
-  // 独家池（限定角色）当前状态：距上次 S（蕾米埃尔）0 抽，50/50 状态
+  // 独家池（限定角色）当前状态：距上次 S（蕾米埃尔）3 抽，50/50 状态
+  // 2026-08 实测校准：蕾米埃尔是 07-29 十连的第 7 抽，其后同秒 3 抽（time 相同需按 id 排序，见 import-summary.js）
   limited: {
     pulls: 454,
-    pity: 0,
+    pity: 3,
     fails: 0,
     sCount: 6,
     losses: 1, // 猫又（常驻，歪）
@@ -50,10 +51,10 @@ export const myAccount = {
     ],
     lastS: { name: '啜泣摇篮', time: '2026-08-06 22:48:28' },
   },
-  // 邦布池：8 只 S 邦布，最近一只艾瑞儿（08-10）
+  // 邦布池：8 只 S 邦布，最近一只艾瑞儿（08-10）；距上次 S 4 抽（同秒批次按 id 排序校准）
   bangboo: {
     pulls: 416,
-    pity: 0,
+    pity: 4,
     sCount: 8,
     sList: [
       { name: '阿饭', count: 3 },

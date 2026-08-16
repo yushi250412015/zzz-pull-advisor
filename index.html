@@ -34,6 +34,20 @@
       </section>
 
       <section class="panel">
+        <h2>从记录实时导入（本地脚本）</h2>
+        <p class="hint">浏览器无法直连米哈游抽卡接口（CORS 限制），抓取与解析由本地 Node 脚本完成：上传日志提取 authkey（或直接粘贴页面 URL）→ 四池拉取 → 生成与「载入我的真实账号」一致的状态快照。</p>
+        <label class="import-file">上传日志文件（Player.log / NAP_*.log）
+          <input type="file" id="import-log-file" accept=".log,.txt" />
+        </label>
+        <div class="import-row">
+          <textarea id="import-url" rows="2" placeholder="也可直接粘贴抽卡 H5 页面 URL（webstatic.mihoyo.com/...gacha-v2/index.html?authkey=...）"></textarea>
+          <button id="copy-import-url" type="button">复制</button>
+        </div>
+        <pre class="import-cmd">node scripts/import-records.mjs --url "粘贴上面的 URL"</pre>
+        <p class="hint" id="import-status">脚本默认写入 docs/data/gacha-records-&lt;日期&gt;.json（gitignore，不进公开仓库）；authkey 约 1 天过期，过期后需在游戏内重新打开一次抽卡记录页；官方 API 仅保留最近约 6 个月记录。</p>
+      </section>
+
+      <section class="panel">
         <h2>推荐结果</h2>
         <div id="results-list"></div>
       </section>

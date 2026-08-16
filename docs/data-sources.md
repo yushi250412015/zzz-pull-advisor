@@ -26,6 +26,7 @@
 | 浅羽悠真（Asaba Harumasa） | 限定 S · **电** · **强攻** · 1.4 | ✅ | 17173 <https://news.17173.com/content/11022024/025408706.shtml> |
 
 - ⚠️ **命破的英文键**：官方简中「命破」，英文社区通用名 **Rupture**（Fragster、HHW、fandom wiki 一致）；官方英文公告在 API 窗口外，取 `role: 'rupture'` 并保留待官方英文公告最终确认的注释。
+- **enName 口径**：`characters.js` 的 enName 为官方/社区多源口径（蕾米埃尔·丹=Remielle Dan：gamespress 官方新闻稿；希格莉德·德拉叙尔=Sigrid de L'Azur：官方角色页 zenless.hoyoverse.com；琉音=Dialyn：fandom wiki；千夏=Sunna：Prydwen；真斗=Komano Manato：BWIKI）。
 
 ## 3. meta 强度分校准（2026-08，Prydwen ZZZ tier list）
 

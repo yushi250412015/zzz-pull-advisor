@@ -20,9 +20,12 @@
  */
 export function parseGachaHistory(records, standardSet, options = {}) {
   const sRankType = options.sRankType ?? '4';
-  const sorted = [...records].sort((a, b) =>
-    String(a.time || '').localeCompare(String(b.time || '')),
-  );
+  const sorted = [...records].sort((a, b) => {
+    const t = String(a.time || '').localeCompare(String(b.time || ''));
+    if (t !== 0) return t;
+    // 实测：一次十连的记录 time 完全相同，id 后缀才是批内真实先后顺序
+    return String(a.id || '').localeCompare(String(b.id || ''));
+  });
   const box = new Set();
   let pity = 0;
   let fails = 0;
@@ -46,9 +49,12 @@ export function parseGachaHistory(records, standardSet, options = {}) {
  */
 export function computeLuckStats(records, standardSet, options = {}) {
   const sRankType = options.sRankType ?? '4';
-  const sorted = [...records].sort((a, b) =>
-    String(a.time || '').localeCompare(String(b.time || '')),
-  );
+  const sorted = [...records].sort((a, b) => {
+    const t = String(a.time || '').localeCompare(String(b.time || ''));
+    if (t !== 0) return t;
+    // 实测：一次十连的记录 time 完全相同，id 后缀才是批内真实先后顺序
+    return String(a.id || '').localeCompare(String(b.id || ''));
+  });
   let sCount = 0;
   let wins = 0;
   for (const rec of sorted) {

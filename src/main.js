@@ -2,6 +2,7 @@ import { characters } from './data/characters.js';
 import { banners } from './data/banners.js';
 import { systems } from './models/systems.js';
 import { DEFAULT_CONFIG } from './core/gacha/config.js';
+import { extractGachaPageUrl, extractGachaType } from './datasource/gacha-log.js';
 import { recommendCharacter } from './core/recommend.js';
 import { verdictFromScore, scoreFromUtility } from './core/decision/decision.js';
 import { mctsPlan } from './core/decision/mcts.js';
@@ -138,6 +139,37 @@ function renderPools() {
     .join('');
 }
 
+// —— 从记录实时导入：上传日志 → 提取抽卡 H5 页面 URL（抓取仍需本地脚本，浏览器直连会被 CORS 拦截） ——
+function bindImportPanel() {
+  const fileInput = $('import-log-file');
+  const urlBox = $('import-url');
+  const status = $('import-status');
+  fileInput.addEventListener('change', async (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const text = await file.text();
+    const url = extractGachaPageUrl(text);
+    urlBox.value = url || '';
+    if (url) {
+      const gt = extractGachaType(url);
+      status.textContent = `已提取页面 URL（gacha_type=${gt || '未知'}，authkey 已含在其中）。复制后执行下方本地脚本命令即可。`;
+    } else {
+      status.textContent = '未在该文件中找到抽卡 H5 页面 URL。请先在游戏内打开一次抽卡记录页（生成含 authkey 的 URL），再上传 Player.log / NAP_*.log。';
+    }
+  });
+  $('copy-import-url').addEventListener('click', () => {
+    const v = urlBox.value;
+    if (!v) return;
+    try {
+      navigator.clipboard.writeText(v);
+      status.textContent = '已复制页面 URL。';
+    } catch {
+      urlBox.select();
+      status.textContent = '自动复制失败，已选中文本，请手动 Ctrl+C。';
+    }
+  });
+}
+
 // —— 时序规划 MCTS：现在抽（上半蕾米埃尔）vs 攒给下半希格莉德 ——
 function runMcts() {
   const target = $('mcts-result');
@@ -213,6 +245,7 @@ function bindEvents() {
 
   $('load-my-account').addEventListener('click', loadMyAccount);
   $('run-mcts').addEventListener('click', runMcts);
+  bindImportPanel();
 }
 
 renderResources();

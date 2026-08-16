@@ -6,6 +6,11 @@
 
 ### 新增
 
+- **「从记录实时导入」全流程**：纯函数汇总模块 `src/datasource/import-summary.js`（逐池 pulls/pity/fails/S 历史/box/欧非，ZZZ 语义）+ 单测 7 项；本地脚本 `scripts/import-records.mjs`（`--url` / `--log` / 自动扫描日志目录 / `--records` 离线重解析 → 四池拉取 → 快照 JSON + 与手填 my-account 一致性对比）；**实测验收：1168 条真实记录重解析 13/13 与手填值一致**
+- **实测校准：同秒批量排序**（`parse.js` + `import-summary.js`）：一次十连的记录 time 完全相同，排序必须按 **(time, id)** 打破平局；据此修正 my-account：独家池保底 0→**3**（蕾米埃尔是 07-29 十连第 7 抽）、邦布池 ≈0→**4**（艾瑞儿是 08-10 十连第 6 抽）；HANDOVER / ARCHIVE 勘误入档
+- **UI 新增「从记录实时导入」面板**：上传 Player.log / NAP_*.log 提取抽卡 H5 页面 URL（含 authkey）+ 一键复制 + 本地脚本命令（诚实声明浏览器 CORS 限制，抓取必须走本地 Node）
+- **`characters.js` 补 enName**：39 位角色英文名（官方 / Prydwen / 社区多源口径，如 Remielle Dan、Sigrid de L'Azur、Dialyn、Sunna、Komano Manato；来源见 `docs/data-sources.md`）
+- 测试 87 项（+8：import-summary 7 + 同秒排序 1）
 - **公告数据源模块**（`src/datasource/announcement.js`）：官方公告 API 实测封装（getAnnList/getAnnContent；实测 title 带 `<p>` 包裹、type_label 在组级、getAnnContent 返回全量列表需按 ann_id 自行筛选）；`stripHtml` / 归一化 / 关键词过滤 / 角色名匹配 / 正文提及检索（`findCharacterMentions`）+ BWIKI wiki 直链（实测 200）；真实返回快照存 `docs/data/ann-*.json`（gitignore）；单测 14 项（mock fetch + 真实结构样本）
 - **角色资料核实与体系修正（千夏/真斗/潘引壶 + 勘误，多源交叉验证）**：千夏 = 限定S · 物理 · 支援（2.6）；真斗 = 常驻A · **火 · 命破**（2.3，狛野真斗 / Komano Manato）；潘引壶 = 常驻A · 物理 · 防护（2.0）；`ROLES` 新增第 6 定位 `rupture`（官方简中「命破」，英文社区通用名 Rupture，待官方英文公告最终确认）；**勘误：爱芮 = 以太/异常（原误记「冰」；「冰属性爱芮」实为 2.8 普罗米娅的社区昵称）**，banners / 体系同步修正；来源与置信度记录于 `docs/data-sources.md`
 - **meta 强度分校准（Prydwen tier list，2026-08）**：换算规则 T0=90 / T0.5=82 / T1=72 / T2=62 / T3=50（例外与冲突在角色 note 注明），20 位角色已校准；`systems.contributions` 同步校准：lumiflux-anomaly + 维琳娜、新增 `rupture`（命破）体系、新增 `ether-anomaly`（爱芮）、ice-anomaly 移出爱芮、anomaly + 苍角（雅狼苍/雅柚苍）；换算规则与全部来源见 `docs/data-sources.md`
@@ -26,7 +31,8 @@
 ### 待办
 
 - 剩余角色 `meta` 待校准（维琳娜、比利、可琳、安东、本 等；艾莲/朱鸢/星见雅仍为旧占位先验 85/80/92）
-- 音擎 / 邦布池的「抽卡推荐」（当前仅展示四池状态）；「从抽卡记录实时导入」全流程 UI
+- 音擎 / 邦布池的「抽卡推荐」（当前仅展示四池状态）
+- 「实时导入」已具备本地脚本全流程（含实测一致性验收）；浏览器端因 CORS 无法直连米哈游接口，网页内全自动需自建代理（暂不实施）
 - 六维评价向量、Kalman 观测接入的真实数据流（低优先级）
 
 ## [0.1.0] - 2026-08-15
