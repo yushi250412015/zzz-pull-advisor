@@ -178,3 +178,14 @@
 - **落库纪律**：仅「标题含明确强度结论词」的才按 `min(共识+3, 92)` 落库——本轮落库 chinatsu 92 / miyabi 92 / zhu-yuan 83（+此前 remielle 92）；描述性标题（如「综合攻略」「赠送大招的击破」）与 meta=null 角色跳过，留待视频文本或人工审阅
 - **未录入角色库的测评**（记录备查）：卢西娅（BV1pg4EzkEv9，83.8 万播放）、般岳、伊芙琳、奥菲丝、兔兔照——如需，可扩展 characters.js 后补观测
 
+
+
+### 12.4 B站登录会话解锁（2026-08，用户授权）
+
+- **获取方式**：用户粘贴 `document.cookie` + httpOnly 的 `SESSDATA`（DevTools → Application → Cookies）；保存于 `%TEMP%\zzz-bili-cookie.txt`（**绝不进 git 仓库**，SESSDATA 约一月过期，用户可随时删除）。`scripts/bili-session.mjs` 自动读取该文件
+- **已解锁接口（实测）**：站内搜索（wbi 签名）、作者视频列表、评论（x/v2/reply，ps≤20）、nav 登录态（用户「想不到女子名字」，大会员）
+- **仍受限（如实记录）**：AI 视频总结（conclusion/get）需 UP 主权限 → -403；**AI 字幕服务当前返回错配内容**（BV1kRgw6zEWM 等返回无关视频字幕，ai_status=2）→ 暂不可信，不采用
+- **技术边界备忘**：本机 cookie 为 v20 app-bound 加密，直接读库需 elevation 服务（命名管道，本执行环境受限）；免登录可用接口为 view/player/tags/archive-related（此前已利用）
+- **已落地事实（本轮）**：希格莉德专武与下位差距 20%+、弹刀触发最高倍率第三段枪势、测试服削过大招倍率、0命「低命战神」——全部入 `mechanics.js` facts 与 `equipment.js` note（单源标注）
+- **毕加丶视频库已拉取**（`space 25978510`）：蕾米埃尔最佳配装 BV19X3r6ME7A、猫又/丽娜/简潜能觉醒系列、爱芮最佳配装 BV1f9PKz5EHC、南宫羽最佳配装 BV1MhQqBEE4Q、年度T0榜单 BV1GUZ1B8E8L 等——待逐条取结论后补观测
+

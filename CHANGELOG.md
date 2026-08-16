@@ -6,6 +6,8 @@
 
 ### 新增
 
+- **【登录会话解锁】B站全接口打通（用户授权 cookie）**：`scripts/bili-session.mjs` 支持 search（wbi 搜索）/space（作者列表）/comments（评论，ps≤20）/summary/subtitle；cookie 存 `%TEMP%\zzz-bili-cookie.txt`（不进仓库）；实测解锁搜索与空间列表（毕加丶绝区零系列全部可见）；AI 总结需 UP 权限、AI 字幕服务当前错配内容不可信（如实记录 data-sources.md §12.4）
+- **【实测事实落库】希格莉德（评论区口径，逐条单源标注）**：专武与下位差距 20%+、弹刀触发最高倍率第三段枪势、测试服削过大招倍率、0命「低命战神」→ `mechanics.js` facts + `equipment.js` note；毕加丶视频库清单入档待逐条取结论
 - **【自动查找打通】B站视频自动发现**：B站搜索/列表接口需登录，但 `archive/related` 免登录 → `scripts/find-bili-videos.mjs` 相关推荐图爬取（作者/关键词过滤 + `bili-title-match` 角色匹配 + 候选观测输出，null-meta 跳过）+ 纯函数匹配单测 3 项；首次爬取自动发现卡特亚 ZZZ 测评全系列（千夏/南宫羽/普罗米娅/维琳娜/星见雅/琉音/柚叶/艾莲/朱鸢/安比/波可娜/蕾米埃尔7影画等十余条），并按纪律落库 3 条标题级观测（千夏 92 / 星见雅 92 / 朱鸢 83）+ 此前蕾米埃尔 92；未录入角色测评（卢西娅/般岳/伊芙琳/奥菲丝）记录备查；data-sources.md §12.3
 - 测试 127 项（+3 bili-title-match）
 - **【多博主观测扩展】爱芮双源视频观测**：新注册观测源**梦轩dada**（mid 27500557，trust 0.7）；卡特亚《爱芮综合测评：屁股有劲！》（BV1opAmzXEoD，82.2 万播放）+ 梦轩dada《爱芮终极指南：以太异常主C的荣耀》（BV1URPNzREDf，42 万播放，标题确认「以太异常主C」与项目勘误一致）→ aria 两条观测；**标题级映射规则正式化**：min(共识+3, 92)，note 必注「我方映射非视频原值」；aria 后验 90 → μ=91.22（双源确认、CI 收窄）；单测 +1；data-sources.md §12.2

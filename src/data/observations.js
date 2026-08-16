@@ -1,8 +1,10 @@
 // 强度观测序列（Kalman 观测源，2026-08 起步）
+// 选源原则（用户指定）：优先「数据实测型、结论不绝对」的博主（如卡特亚、毕加丶），
+//   避免营销号/纯节奏号；问句式标题（如「真实强度如何？」）是严谨性的信号，属优质源。
 // 观测源分级（trust = 0-1 可信度权重，用于测量噪声 R = base/weight²）：
-//   katya（卡特亚 B站视频/图文，mid 470042408）——用户指定的一等可信观测源；
-//        当前网络受限（B站列表/搜索 API 风控 -352/-799、RSSHub 不可用），其视频文本待补入；
-//        通道已就绪：单视频 view API 实测可用（api.bilibili.com/x/web-interface/view?bvid=...）
+//   katya（卡特亚 B站视频/图文，主频道 mid 43222001，切片频道 470042408）
+//   bijia（毕加丶，数据实测型，mid 25978510）
+//   mengxuan（梦轩dada，mid 27500557）
 //   prydwen（社区 tier 榜，2026-08 抓取）
 //   blogger（权威博主文章：游侠网/17173/9game/niubi 等，来源见 docs/data-sources.md）
 // 每条观测：{ characterId, value(0-100), weight(0-1), source, date, note }
@@ -13,6 +15,8 @@
 export const observationSources = {
   // 卡特亚主频道 mid 43222001（另有切片频道「卡特亚仿身泪滴」mid 470042408）
   katya: { label: '卡特亚（B站视频/图文，mid 43222001）', trust: 0.9 },
+  // 毕加丶（数据实测型，如「实测21支队伍！真实强度如何？」，mid 25978510）
+  bijia: { label: '毕加丶（B站实测向测评，mid 25978510）', trust: 0.85 },
   // 梦轩dada（B站 ZZZ 攻略/测评，mid 27500557）
   mengxuan: { label: '梦轩dada（B站视频，mid 27500557）', trust: 0.7 },
   prydwen: { label: 'Prydwen tier list', trust: 0.8 },
