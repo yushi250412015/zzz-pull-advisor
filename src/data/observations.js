@@ -9,7 +9,8 @@
 // 数值换算规则见 data-sources.md §3（T0=90 / T0.5=82 / T1=72 / T2=62 / T3=50）
 
 export const observationSources = {
-  katya: { label: '卡特亚（B站视频/图文）', trust: 0.9 },
+  // 卡特亚主频道 mid 43222001（另有切片频道「卡特亚仿身泪滴」mid 470042408）
+  katya: { label: '卡特亚（B站视频/图文，mid 43222001）', trust: 0.9 },
   prydwen: { label: 'Prydwen tier list', trust: 0.8 },
   blogger: { label: '权威博主文章（游侠网/17173/9game 等）', trust: 0.6 },
 };
@@ -45,6 +46,9 @@ export const observations = [
   { characterId: 'lycaon', value: 72, weight: 0.8, source: 'prydwen', date: '2026-08', note: 'T1' },
   { characterId: 'grace', value: 62, weight: 0.8, source: 'prydwen', date: '2026-08', note: 'T2' },
   { characterId: 'soldier-11', value: 72, weight: 0.8, source: 'prydwen', date: '2026-08', note: 'T1' },
-  // —— 卡特亚观测示例（占位注释；待其视频文本补入后替换为真实条目）——
-  // { characterId: 'sigrid', value: 84, weight: 0.9, source: 'katya', date: '2026-08-1x', note: '视频实测评价（待补入具体出处/BV 号）' },
+  // —— 卡特亚观测（2026-08-14 视频，BV1ZPgA6YEwa）——
+  // 说明：该视频简介/字幕为空、评论需登录、AI 总结需登录 → 视频内具体数值（倍率/影画幅度/专武对比）
+  //       当前不可程序化读取；本条目为「标题级强正面结论」的保守映射（现有共识 82 + 3 = 85，非视频原值）。
+  //       获得视频内具体结论后，请替换/追加为真实数值观测（data-sources.md §12.1）。
+  { characterId: 'sigrid', value: 85, weight: 0.9, source: 'katya', date: '2026-08-14', note: 'BV1ZPgA6YEwa《希格莉德综合测评：超级力量！》标题强正面结论；数值 85 为我方保守映射（非视频原值），待补视频内具体结论' },
 ];
