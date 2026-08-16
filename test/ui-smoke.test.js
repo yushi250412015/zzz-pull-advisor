@@ -31,8 +31,10 @@ describe('UI 冒烟（jsdom 渲染）', () => {
     expect(el.innerHTML).toContain('艾瑞儿');
   });
 
-  it('四池状态含欧非统计', () => {
-    expect(document.getElementById('pools-list').innerHTML).toContain('欧非');
+  it('四池状态面板渲染（未同步时提示 + 池卡片）', () => {
+    const el = document.getElementById('pools-list').innerHTML;
+    expect(el).toContain('尚未同步');
+    expect(el).toContain('独家角色池');
   });
 
   it('官方情报面板渲染（3.1 快照 + 提及角色）', () => {

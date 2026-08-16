@@ -3,23 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="description" content="绝区零抽卡决策工具：基于你的 box 与资源，纯强度给出抽 / 观望 / 跳过建议；数据不出本机。" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' http://localhost:8787 http://127.0.0.1:8787 ws://localhost:5173 ws://127.0.0.1:5173 http://localhost:5173 http://127.0.0.1:5173; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
     <title>ZZZ 抽卡参谋 · Pull Advisor</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <div class="container">
       <header>
-        <h1>ZZZ 抽卡参谋</h1>
-        <p class="sub">基于你的 box 与资源，为下版本卡池给出「抽 / 观望 / 跳过」建议</p>
+        <h1><span class="hero">ZZZ 抽卡参谋</span></h1>
+        <p class="sub">基于你的 box 与资源，为下版本卡池给出「抽 / 观望 / 跳过」建议 · 纯强度 · 数据不出本机</p>
       </header>
 
       <section class="panel">
         <h2>资源</h2>
         <div id="resources-form"></div>
-        <p class="hint">
-          提示：保底 / 大保底按卡池独立计算（独家与常驻分开）。
-          <button id="load-my-account" type="button">载入我的真实账号快照（uid 25183553）</button>
-        </p>
+        <p class="hint">提示：保底 / 大保底按卡池独立计算（独家与常驻分开）。box 与保底建议直接到「账号同步」面板一键获取，无需手填。</p>
       </section>
 
       <section class="panel">
@@ -30,7 +33,7 @@
       <section class="panel">
         <h2>我的真实账号 · 四池状态（UID 同步后自动刷新）</h2>
         <div id="pools-list"></div>
-        <p class="hint">音擎 / 邦布池为真实抽卡记录解析结果，仅作状态参考；音擎 / 邦布的「抽卡推荐」待后续版本接入。</p>
+        <p class="hint">同步后各池均为你的真实抽卡记录解析结果，仅作状态参考。</p>
       </section>
 
       <section class="panel">
@@ -38,7 +41,7 @@
         <p class="hint">官方没有「输入 UID 直查」接口：抽卡记录必须带游戏内生成的 authkey。本工具用本地服务代抓——先运行 <code>node scripts/import-records.mjs --serve</code>（监听 localhost:8787），再在下方输入游戏内 UID 点「同步账号」。UID 仅用于校验同步结果是否为你本人账号。</p>
         <div class="import-row">
           <input type="text" id="sync-uid" placeholder="游戏内 UID（用于校验同步结果）" />
-          <button id="sync-btn" type="button">同步账号</button>
+          <button id="sync-btn" type="button" class="primary-btn">同步账号</button>
         </div>
         <p class="hint" id="sync-status"></p>
         <hr />
@@ -90,7 +93,7 @@
           <label><input type="checkbox" id="w-auto" checked /> λ_risk / α_cost 自动推导</label>
           <button id="reset-weights" type="button">恢复默认</button>
         </div>
-        <p class="hint">本工具纯按强度推荐：喜好不参与评分（α_f 恒为 0）。自动模式按「3.1 零氪 140 抽 + 你的账号平均 80.4 抽/S（偏非）」推导 λ_risk ≈ 38.9、α_cost ≈ 0.143；任何手动改动即切为手动模式，改动失焦后即时生效。</p>
+        <p class="hint">本工具纯按强度推荐：喜好不参与评分（α_f 恒为 0）。自动模式按「3.1 零氪 140 抽 + 你的账号欧非」推导（未同步时按正常欧非 62 抽/S，同步后按账号实际校准）；任何手动改动即切为手动模式，改动失焦后即时生效。</p>
       </section>
 
       <section class="panel">
@@ -101,6 +104,17 @@
         </div>
         <div id="mcts-scenarios"></div>
       </section>
+
+      <footer class="panel privacy">
+        <h2>隐私与安全</h2>
+        <ul>
+          <li>无埋点、无广告、不加载任何第三方资源；所有数据只在你本机与米哈游官方接口之间流转。</li>
+          <li>UID 仅用于校验同步结果是否为本人账号，不写入公开仓库；仓库中的账号数据为示例占位，不含任何真实个人信息。</li>
+          <li>authkey（游戏内抽卡记录凭证）只在本地脚本中处理，落盘快照一律脱敏，约 1 天自动过期。</li>
+          <li>本地同步服务只监听 127.0.0.1，且仅接受本工具页面来源（Origin 白名单 + 3 秒限速），其他网页无法读取你的数据。</li>
+          <li>B 站登录 cookie（观测源抓取用）仅存于本机 %TEMP% 目录，绝不进入仓库。</li>
+        </ul>
+      </footer>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>

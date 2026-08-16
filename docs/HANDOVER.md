@@ -44,7 +44,7 @@
 | P3 决策 | ✅ | 帕累托、总效用、权重推导、sigmoid 推荐分、0.6/0.4 结论 |
 | P4 时序 | ✅ | Kalman 单步/序列/置信区间、多源观测融合 |
 | P5 接线 | ✅ | 记录解析、欧非统计、推荐编排、数据源适配器（URL 提取 + 拉取）、MCTS |
-| UI | ✅ | 资源输入 + box 勾选 + 账号同步（UID → 本地服务 → 四池刷新）+ 「载入我的真实账号」+ 结果卡片（含自选混池「首金必不歪」标签） |
+| UI | ✅ | 资源输入 + box 勾选 + 账号同步（UID → 本地服务 → 四池刷新）+ 结果卡片（含自选混池「首金必不歪」标签） |
 | 真实账号数据 | ✅ | 4 池 1168 条已解析入库（`my-account.js` + 本地 `docs/data/` 原始 JSON） |
 | 音擎/邦布池进 UI | ⬜ | 数据已有，UI 未接 |
 | 账号同步（UID）全流程 | ✅ | `import-records.mjs --serve` 本地服务 + UI「账号同步」面板（日志 authkey → 四池拉取 → 刷新 state.account）；上传日志/粘贴 URL 为备用通道 |
@@ -149,10 +149,12 @@
 
 - 结构：资源面板（加密母带/菲林/保底计数（独家池）/大保底勾选）→ box 面板（39 个角色 checkbox，`badge` 显示元素，null 显示 `?`）→ 推荐结果卡片列表。
 - 数据流：`state = {resources, box.characters{id:{owned,mindscape}}, account}`；`input` 事件实时重算（喜好已移除：favor 恒 50、α_favor 恒 0）；`renderResults()` 展开 `banners`（含混池 3 选 1 目标与「首金必不歪」标签），每目标调 `recommendCharacter` + `verdictFromScore(scoreFromUtility(...))`。
-- 「载入我的真实账号」按钮：套用 `my-account.box`（勾选 20 角色）+ 独家 pity/fails，重渲染。
+- 账号数据：`state.account` 初始为示例占位（`my-account.js` 不含真实个人信息）；「账号同步」成功后整体刷新 box / 保底 / 欧非并重算全部推荐。
 - 已知局限：仅角色池进 UI；音擎/邦布池数据未接；权重未暴露为 UI 输入；KEEP 简洁风格（无框架）。
 
-## 6. 用户真实账号数据（uid 25183553，2026-08-15 解析，1168 条）
+## 6. 账号数据（uid 已从公开仓库脱敏；真实数据走本地同步，本机快照 docs/data/ 已被 gitignore）
+
+> 下表为 2026-08-15 解析的历史快照（仅保留聚合统计，已去除 UID 等标识）；当前 `src/data/my-account.js` 为示例占位。
 
 | 池（gacha_type） | 抽数 | S 级数 | 距上次 S（保底） | S 级列表（时间序） |
 |---|---|---|---|---|

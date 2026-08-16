@@ -37,7 +37,7 @@ function currentWeights() {
   const w = state.autoWeights
     ? deriveWeights({
         versionResources: VERSION_RESOURCES,
-        avgPity: state.account.luck.avgPullsPerAgentS, // 80.4 抽/S，偏非 → λ_risk 上调
+        avgPity: state.account.luck.avgPullsPerAgentS, // 0=未同步按正常欧非；同步后按账号实际校准 λ_risk
       })
     : state.weights;
   return { ...w, alphaFavor: 0 };
@@ -161,22 +161,6 @@ function renderResults() {
     .join('');
 }
 
-function loadMyAccount() {
-  for (const id of state.account.box) {
-    state.box.characters[id] = { owned: true, mindscape: 0 };
-    const el = document.querySelector(`[data-char="${id}"]`);
-    if (el) el.checked = true;
-  }
-  state.resources = {
-    encryptedTapes: 0,
-    polychrome: 0,
-    pity: state.account.limited.pity,
-    fails: state.account.limited.fails,
-  };
-  renderResources();
-  renderResults();
-}
-
 // —— 我的真实账号 · 四池状态（初始 2026-08-15 快照；UID 同步后自动刷新） ——
 function renderPools() {
   const pools = [
@@ -204,8 +188,10 @@ function renderPools() {
       </div>`;
     })
     .join('') +
-    '<p class="hint">欧非（全账号）：代理人池平均 ' + state.account.luck.avgPullsPerAgentS +
-    ' 抽/S（期望 62.5 → 偏非）· 独家池胜率 ' + Math.round(state.account.luck.limitedWinRate * 100) + '% · 全账号 ' + state.account.luck.totalPulls + ' 抽 · UID ' + (state.account.uid || '—') + ' · 解析 ' + (state.account.analyzedAt || '—') + '</p>';
+    (state.account.uid
+      ? '<p class="hint">欧非（全账号）：代理人池平均 ' + state.account.luck.avgPullsPerAgentS +
+        ' 抽/S（理论期望 62.5，越低越欧）· 独家池胜率 ' + Math.round(state.account.luck.limitedWinRate * 100) + '% · 全账号 ' + state.account.luck.totalPulls + ' 抽 · UID ' + state.account.uid + ' · 解析 ' + (state.account.analyzedAt || '—') + '</p>'
+      : '<p class="hint">尚未同步：以上为示例占位数据（不含真实个人信息）。运行 <code>node scripts/import-records.mjs --serve</code>，再到「账号同步」面板输入 UID，即可一键获取你的真实 box / 保底 / 欧非。</p>')
 }
 
 // —— 官方情报（3.1 公告快照，静态数据避免浏览器 CORS） ——
@@ -502,7 +488,6 @@ function bindEvents() {
     }
   });
 
-  $('load-my-account').addEventListener('click', loadMyAccount);
   $('sync-btn').addEventListener('click', syncAccount);
   $('sync-uid').addEventListener('keydown', (event) => {
     if (event.key === 'Enter') syncAccount();

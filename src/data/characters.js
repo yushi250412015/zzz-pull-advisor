@@ -18,7 +18,7 @@ export const characters = {
   yuzuha: { id: 'yuzuha', name: '浮波柚叶', enName: 'Ukinami Yuzuha', rarity: 'S', element: 'physical', role: 'support', meta: 90, note: '3.1 下半自选混池；2.1 物理支援·异常体系专辅（Prydwen T0）' },
   harumasa: { id: 'harumasa', name: '浅羽悠真', enName: 'Asaba Harumasa', rarity: 'S', element: 'electric', role: 'attack', meta: 72, note: '3.1 下半自选混池；1.4 电强攻（Prydwen T1）' },
 
-  // —— 用户 box：S 级（2026-08-15 抽卡记录解析，uid 25183553） ——
+  // —— S 级常驻/复刻角色（box 由用户账号同步自动勾选，此处仅为全角色库） ——
   chinatsu: { id: 'chinatsu', name: '千夏', enName: 'Sunna', rarity: 'S', element: 'physical', role: 'support', meta: 90, note: '2.6 限定·物理支援，妄想天使组合（Prydwen T0；2.6 支援榜 TOP2）' },
   'nangong-yu': { id: 'nangong-yu', name: '南宫羽', enName: 'Nangong Yu', rarity: 'S', element: 'ether', role: 'stun', meta: 90, note: '2.7 以太击破（Prydwen T0）' },
   promya: { id: 'promya', name: '普罗米娅', enName: 'Promeia', rarity: 'S', element: 'ice', role: 'anomaly', meta: 82, note: '2.8 冰异常·异放体系核心，社区昵称「冰属性爱芮」（Prydwen T0.5）' },
