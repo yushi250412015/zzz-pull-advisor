@@ -116,3 +116,17 @@
 - `archive-announcements.mjs`：公告列表+正文全量归档 `docs/data/ann-archive-<日期>.json`（gitignore）
 - 实测运行（2026-08-16）：3.1 全部条目「已录入」，时间窗 2026/07/29 → 2026/09/09 提取正确
 
+
+
+### 新版本数据更新 SOP（每 6 周一次，工具链已就绪）
+
+1. `node scripts/update-banners.mjs` —— 拉最新版本公告、提取「全新代理人/音擎/邦布」与时间窗，对比输出「已录入/【新增】」，事实落盘 `docs/data/version-facts-<日期>.json`
+2. 人工审阅事实后更新源码（**不自动改源码**）：
+   - 新代理人 → `characters.js`（name/enName/element/role/rarity；meta 无权威源先标 null）→ `banners.js`（版本/phase/频段）
+   - 新音擎 → `equipment.js`（配对角色：查 BWIKI「毕业音擎」；无源标 `pairing: 'inferred'`）→ `banners.js`（weapon 条目）
+   - 新邦布 → `equipment.js`（元素/阵营：BWIKI 邦布页）→ `banners.js`（bangboo 条目）
+   - 资源基准：`decision.js` 的 `VERSION_RESOURCES` 与 `main.js` 的 `VERSION_RESOURCES`（版本零氪抽数变化时同步）
+   - `official-facts.js` 快照刷新（含 fetchedAt 与来源 ann_id）
+3. `npm test` 全绿 + `npm run build` 通过（语义变更同步单测）
+4. 更新 `CHANGELOG.md` 与本文档来源链接；commit + push（github.com 抖动用后台循环重试）
+

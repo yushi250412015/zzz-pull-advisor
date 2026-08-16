@@ -4,8 +4,11 @@ import { systems } from './models/systems.js';
 import { DEFAULT_CONFIG } from './core/gacha/config.js';
 import { extractGachaPageUrl, extractGachaType } from './datasource/gacha-log.js';
 import { recommendEquipment, EQUIPMENT_DEFAULTS } from './core/recommend-equipment.js';
+import { buildPullStrategies } from './core/decision/pull-strategies.js';
 import { buildPlanningScenarios } from './core/decision/planning.js';
 import { weapons, bangboos } from './data/equipment.js';
+import { officialFacts } from './data/official-facts.js';
+import { buildWikiUrl } from './datasource/announcement.js';
 import { recommendCharacter } from './core/recommend.js';
 import { verdictFromScore, scoreFromUtility, deriveWeights } from './core/decision/decision.js';
 import { mctsPlan } from './core/decision/mcts.js';
@@ -95,6 +98,15 @@ function renderResults() {
         weights: currentWeights(),
       });
       const verdict = verdictFromScore(scoreFromUtility(r.utility), state.thresholds);
+      const frontier = buildPullStrategies({
+        box: state.box,
+        resources: state.resources,
+        characterId: t.id,
+        systems,
+        bannerCfg: cfg,
+        favor,
+        weights: currentWeights(),
+      });
       results.push({
         banner,
         characterId: t.id,
@@ -103,6 +115,7 @@ function renderResults() {
         verdict,
         score: scoreFromUtility(r.utility),
         guaranteedFirst: !!banner.firstGoldGuaranteed,
+        paretoPulls: frontier.map((s) => s.pulls),
         ...r,
       });
     }
@@ -123,6 +136,7 @@ function renderResults() {
           <li>空手风险 ${(r.risk * 100).toFixed(1)}%</li>
           <li>边际效用 +${r.combatDelta.toFixed(2)}</li>
           <li>预算 ${r.pulls} 抽（机会成本 ${r.cost.toFixed(0)}）</li>
+          ${r.paretoPulls.length > 1 ? '<li>帕累托最优预算：' + r.paretoPulls.map((p) => p + ' 抽').join(' / ') + '</li>' : ''}
         </ul>
       </div>`,
     )
@@ -172,6 +186,33 @@ function renderPools() {
       </div>`;
     })
     .join('');
+}
+
+// —— 官方情报（3.1 公告快照，静态数据避免浏览器 CORS） ——
+const ELEMENT_LABEL = { fire: '火', ice: '冰', electric: '电', physical: '物理', ether: '以太', wind: '风', lumiflux: '流明' };
+const ROLE_LABEL = { attack: '强攻', anomaly: '异常', stun: '击破', support: '支援', defense: '防护', rupture: '命破' };
+
+function renderOfficialFacts() {
+  const f = officialFacts;
+  const agentRows = f.agents
+    .map(
+      (a) =>
+        '<li>' + a.name + '（' + (ELEMENT_LABEL[a.element] || a.element) + '·' + (ROLE_LABEL[a.role] || a.role) + '）「' + a.channel +
+        '」频段 · <a href="' + buildWikiUrl(a.name) + '" target="_blank" rel="noopener">wiki</a></li>',
+    )
+    .join('');
+  const engineRows = f.engines
+    .map((e) => '<li>' + e.name + '（' + (ROLE_LABEL[e.role] || e.role) + '）——' + e.owner + '</li>')
+    .join('');
+  const bangbooRows = f.bangboos
+    .map((b) => '<li>' + b.name + '（' + b.note + '）「' + b.channel + '」频段</li>')
+    .join('');
+  $('official-facts').innerHTML =
+    '<div class="score">' + f.version.number + '「' + f.version.name + '」 · ' + f.window.start + ' → ' + f.window.end +
+    ' · 官方公告 API ann_id ' + f.annId + '（快照 ' + f.fetchedAt + '）</div>' +
+    '<ul><li>全新代理人：<ul>' + agentRows + '</ul></li>' +
+    '<li>全新音擎：<ul>' + engineRows + '</ul></li>' +
+    '<li>全新邦布：<ul>' + bangbooRows + '</ul></li></ul>';
 }
 
 // —— 从记录实时导入：上传日志 → 提取抽卡 H5 页面 URL（抓取仍需本地脚本，浏览器直连会被 CORS 拦截） ——
@@ -392,6 +433,7 @@ renderBox();
 renderPools();
 renderResults();
 renderEquipmentResults();
+renderOfficialFacts();
 renderWeights();
 renderMctsScenarios();
 bindEvents();
