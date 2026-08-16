@@ -21,4 +21,12 @@ describe('observations 结构完整性', () => {
     expect(katya[0]).toMatchObject({ characterId: 'sigrid', weight: 0.9 });
     expect(katya[0].note).toContain('BV1ZPgA6YEwa');
   });
+
+  it('爱芮有卡特亚与梦轩dada双源视频观测（BV1opAmzXEoD / BV1URPNzREDf）', () => {
+    const ariaObs = observations.filter((o) => o.characterId === 'aria');
+    expect(ariaObs.some((o) => o.source === 'katya' && o.note.includes('BV1opAmzXEoD'))).toBe(true);
+    expect(ariaObs.some((o) => o.source === 'mengxuan' && o.note.includes('BV1URPNzREDf'))).toBe(true);
+    const mengxuan = ariaObs.find((o) => o.source === 'mengxuan');
+    expect(observationSources.mengxuan.trust).toBe(0.7);
+  });
 });

@@ -6,6 +6,8 @@
 
 ### 新增
 
+- **【多博主观测扩展】爱芮双源视频观测**：新注册观测源**梦轩dada**（mid 27500557，trust 0.7）；卡特亚《爱芮综合测评：屁股有劲！》（BV1opAmzXEoD，82.2 万播放）+ 梦轩dada《爱芮终极指南：以太异常主C的荣耀》（BV1URPNzREDf，42 万播放，标题确认「以太异常主C」与项目勘误一致）→ aria 两条观测；**标题级映射规则正式化**：min(共识+3, 92)，note 必注「我方映射非视频原值」；aria 后验 90 → μ=91.22（双源确认、CI 收窄）；单测 +1；data-sources.md §12.2
+- 测试 124 项（+1）
 - **【卡特亚观测落库】首个真实视频观测（BV1ZPgA6YEwa）**：卡特亚《希格莉德综合测评：超级力量！》（2026-08-14，32.8 万播放）标题级强正面结论 → `observations.js` 观测 `{sigrid, 85, weight 0.9, source 'katya'}`（85 为现有共识 82 的保守映射，已在 note 注明非视频原值）；sigrid Kalman 后验 82 → μ=83.66（CI 收窄）；新增 `scripts/fetch-bv.mjs`（B站视频信息一键抓取：view/player/tags 三接口无需登录，实测可用）与观测结构单测 2 项；通道细节入档 data-sources.md §12.1
 - 测试 123 项（+2 observations）
 - **【B·建模】Kalman 多源观测闭环（卡特亚=一等观测源）**：`src/data/observations.js`（逐条观测 {value/weight/source/date/note}，源可信度 Prydwen 0.8 / 权威博主 0.6 / **卡特亚 0.9**）+ `estimateMeta / buildMetaPosteriors` 纯函数（先验=现有 meta、R=36/weight² 融合、Q=4 版本漂移）+ UI「强度可信度」面板（先验 → 后验 μ ± 95% CI，冲突观测自动折中）+ 单测 4 项；卡特亚频道（mid 470042408）与 B站 view API 通道已建档，其视频文本当前网络受限（风控），数据待补入即插即用（data-sources.md §12）

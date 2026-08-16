@@ -7,10 +7,14 @@
 //   blogger（权威博主文章：游侠网/17173/9game/niubi 等，来源见 docs/data-sources.md）
 // 每条观测：{ characterId, value(0-100), weight(0-1), source, date, note }
 // 数值换算规则见 data-sources.md §3（T0=90 / T0.5=82 / T1=72 / T2=62 / T3=50）
+// 标题级强正面结论映射规则（视频文本不可读时的保守做法，见 data-sources.md §12）：
+//   value = min(该角色现有共识 meta + 3, 92)，并在 note 注明「我方映射，非视频原值」
 
 export const observationSources = {
   // 卡特亚主频道 mid 43222001（另有切片频道「卡特亚仿身泪滴」mid 470042408）
   katya: { label: '卡特亚（B站视频/图文，mid 43222001）', trust: 0.9 },
+  // 梦轩dada（B站 ZZZ 攻略/测评，mid 27500557）
+  mengxuan: { label: '梦轩dada（B站视频，mid 27500557）', trust: 0.7 },
   prydwen: { label: 'Prydwen tier list', trust: 0.8 },
   blogger: { label: '权威博主文章（游侠网/17173/9game 等）', trust: 0.6 },
 };
@@ -51,4 +55,7 @@ export const observations = [
   //       当前不可程序化读取；本条目为「标题级强正面结论」的保守映射（现有共识 82 + 3 = 85，非视频原值）。
   //       获得视频内具体结论后，请替换/追加为真实数值观测（data-sources.md §12.1）。
   { characterId: 'sigrid', value: 85, weight: 0.9, source: 'katya', date: '2026-08-14', note: 'BV1ZPgA6YEwa《希格莉德综合测评：超级力量！》标题强正面结论；数值 85 为我方保守映射（非视频原值），待补视频内具体结论' },
+  // —— 爱芮观测（2026-02/03 视频，两源交叉）——
+  { characterId: 'aria', value: 92, weight: 0.9, source: 'katya', date: '2026-02-27', note: 'BV1opAmzXEoD《爱芮综合测评：屁股有劲！》标题强正面；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
+  { characterId: 'aria', value: 92, weight: 0.7, source: 'mengxuan', date: '2026-03-04', note: 'BV1URPNzREDf《爱芮终极指南：以太异常主C的荣耀》标题强正面，并确认「以太异常主C」定位（与项目数据一致）；92 为我方保守映射（非视频原值）' },
 ];
