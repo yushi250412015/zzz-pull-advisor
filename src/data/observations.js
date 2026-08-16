@@ -66,6 +66,9 @@ export const observations = [
   { characterId: 'chinatsu', value: 92, weight: 0.9, source: 'katya', date: '2026-02-02', note: 'BV1yPFPzKESn《妄想天使千夏综合测评：有力气的偶像！高速以太帷幕！》标题强正面；92=min(共识90+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'miyabi', value: 92, weight: 0.9, source: 'katya', date: '2024-12-15', note: 'BV1r5q9YXECT《星见雅综合测评：超强大范围输出》标题强正面；92=min(先验92+3,92) 我方保守映射（非视频原值）' },
   { characterId: 'zhu-yuan', value: 83, weight: 0.9, source: 'katya', date: '2024-07-23', note: 'BV1tS42197rb《朱鸢综合测评：…爆发天花板以太大C》标题强正面；83=min(先验80+3,92) 我方保守映射（非视频原值）' },
+  // —— 老角色观测（毕加/卡特亚视频，2025 口径）——
+  { characterId: 'nicole', value: 85, weight: 0.85, source: 'bijia', date: '2025-02', note: 'BV1meAYezE27《妮可强度登顶！》毕加标题级结论「强度登顶」；85=min(共识82+3,92) 我方保守映射（非视频原值）' },
+  { characterId: 'lycaon', value: 74, weight: 0.45, source: 'bili-comments', date: '2025-05', note: 'BV1iijSzfEic 自选S盘点评论区共识「狼＞丽娜＞11号/格莉丝＞猫又」；74 为我方保守映射（非原值）' },
   // —— 3.1 潜能觉醒共识（毕加视频评论区多条交叉，2026-07）——
   { characterId: 'nekomata', value: 75, weight: 0.45, source: 'bili-comments', date: '2026-07', note: 'BV1qQgt6qExv 评论区共识：3.1 加强后猫又仍是最强物理强攻（「出道即巅峰」）；75 为我方对评论语义的保守映射（非原值）' },
   { characterId: 'rina', value: 62, weight: 0.45, source: 'bili-comments', date: '2026-07', note: 'BV1acgb6hEoa 评论区共识：3.1 潜能觉醒后丽娜成强攻队万能插件（与狼互解额外能力）；62 为我方保守映射（非原值），手感抱怨仍存在' },

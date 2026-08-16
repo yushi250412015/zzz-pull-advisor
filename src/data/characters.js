@@ -40,13 +40,13 @@ export const characters = {
   'pan-yinhu': { id: 'pan-yinhu', name: '潘引壶', enName: 'Pan Yinhu', rarity: 'A', element: 'physical', role: 'defense', meta: 72, note: '2.0 常驻·物理防护（熊猫希人）；命破辅助、卢西娅下位替代（Prydwen T1）' },
 
   // —— 其他常驻 S（50/50 歪池参考） ——
-  lycaon: { id: 'lycaon', name: '莱卡恩', enName: 'Lycaon', rarity: 'S', element: 'ice', role: 'stun', standard: true, meta: 72, note: 'Prydwen T1' },
+  lycaon: { id: 'lycaon', name: '莱卡恩', enName: 'Lycaon', rarity: 'S', element: 'ice', role: 'stun', standard: true, meta: 72, note: 'Prydwen T1；公测加减冰抗 25，常驻S自选优先级第一（毕加评论区共识）' },
   grace: { id: 'grace', name: '格莉丝', enName: 'Grace', rarity: 'S', element: 'electric', role: 'anomaly', standard: true, meta: 62, note: 'Prydwen T2' },
-  'soldier-11': { id: 'soldier-11', name: '11号', enName: 'Soldier 11', rarity: 'S', element: 'fire', role: 'attack', standard: true, meta: 72, note: 'Prydwen T1' },
+  'soldier-11': { id: 'soldier-11', name: '11号', enName: 'Soldier 11', rarity: 'S', element: 'fire', role: 'attack', standard: true, meta: 72, note: 'Prydwen T1；公测加强明显但「目押」操作门槛高（卡特亚置顶/评论区）' },
 
   // —— 常用限定 S（占位，meta 待校准） ——
-  ellen: { id: 'ellen', name: '艾莲', enName: 'Ellen Joe', rarity: 'S', element: 'ice', role: 'attack', meta: 85 },
-  'zhu-yuan': { id: 'zhu-yuan', name: '朱鸢', enName: 'Zhu Yuan', rarity: 'S', element: 'ether', role: 'attack', meta: 80 },
+  ellen: { id: 'ellen', name: '艾莲', enName: 'Ellen Joe', rarity: 'S', element: 'ice', role: 'attack', meta: 85, note: '1.0 开服限定·冰强攻蓄力主C；开服「最强」、2.0 加强（卡特亚 BV1U57czCEKV）；meta 为旧占位先验' },
+  'zhu-yuan': { id: 'zhu-yuan', name: '朱鸢', enName: 'Zhu Yuan', rarity: 'S', element: 'ether', role: 'attack', meta: 80, note: '1.0 开服限定·以太强攻；失衡期爆发天花板、支援触发百搭；meta 为旧占位先验' },
   miyabi: { id: 'miyabi', name: '星见雅', enName: 'Hoshimi Miyabi', rarity: 'S', element: 'ice', role: 'anomaly', meta: 92 },
 };
 
