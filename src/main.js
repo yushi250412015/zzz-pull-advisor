@@ -3,6 +3,9 @@ import { banners } from './data/banners.js';
 import { systems } from './models/systems.js';
 import { DEFAULT_CONFIG } from './core/gacha/config.js';
 import { extractGachaPageUrl, extractGachaType } from './datasource/gacha-log.js';
+import { recommendEquipment, EQUIPMENT_DEFAULTS } from './core/recommend-equipment.js';
+import { buildPlanningScenarios } from './core/decision/planning.js';
+import { weapons, bangboos } from './data/equipment.js';
 import { recommendCharacter } from './core/recommend.js';
 import { verdictFromScore, scoreFromUtility, deriveWeights } from './core/decision/decision.js';
 import { mctsPlan } from './core/decision/mcts.js';
@@ -72,6 +75,7 @@ function renderBox() {
 function renderResults() {
   const results = [];
   for (const banner of banners) {
+    if (banner.type !== 'character') continue; // 音擎/邦布走 renderEquipmentResults
     const targets = banner.selectable
       ? banner.selectable.map((id) => ({ id, label: `自选·${characters[id].name}` }))
       : [{ id: banner.characterId, label: '' }];
@@ -201,9 +205,76 @@ function bindImportPanel() {
   });
 }
 
-// —— 时序规划 MCTS：现在抽（上半蕾米埃尔）vs 攒给下半希格莉德 ——
-function runMcts() {
-  const target = $('mcts-result');
+// —— 音擎 / 邦布推荐结果 ——
+function renderEquipmentResults() {
+  const cards = [];
+  for (const banner of banners) {
+    if (banner.type !== 'weapon' && banner.type !== 'bangboo') continue;
+    const isWeapon = banner.type === 'weapon';
+    const equipment = isWeapon ? weapons[banner.weaponId] : bangboos[banner.bangbooId];
+    if (!equipment) continue;
+    const ownedNames = isWeapon
+      ? (myAccount.weapon.sList || []).map((s) => s.name)
+      : (myAccount.bangboo.sList || []).map((s) => s.name);
+    const owned = ownedNames.includes(equipment.name);
+    const favor = isWeapon ? (state.favors[equipment.ownerId] ?? DEFAULT_FAVOR) : DEFAULT_FAVOR;
+    const r = recommendEquipment({
+      kind: banner.type,
+      equipment,
+      characters,
+      box: state.box,
+      resources: state.resources,
+      systems,
+      favor,
+      weights: currentWeights(),
+      owned,
+      poolState: isWeapon ? { pity: myAccount.weapon.pity, fails: 0 } : { pity: myAccount.bangboo.pity, fails: 0 },
+    });
+    const score = scoreFromUtility(r.utility);
+    const verdict = owned ? null : verdictFromScore(score, state.thresholds);
+    const ownerLabel = isWeapon
+      ? `对应角色：${characters[equipment.ownerId]?.name || '?'}${equipment.pairing === 'inferred' ? '（配对推断，待实装核实）' : ''}`
+      : `阵营同伴：${characters[equipment.companionId]?.name || '?'} · 元素 ${equipment.element || '?'}`;
+    const riskText = r.risk === null ? '—（官方概率待核实）' : `${(r.risk * 100).toFixed(1)}%`;
+    cards.push(`
+      <div class="card ${owned ? '' : `verdict-${verdict}`}">
+        <div class="head">
+          <span class="name">${equipment.name}<span class="eq-tag">${isWeapon ? '音擎' : '邦布'}</span></span>
+          ${owned ? '<span class="verdict">已拥有</span>' : `<span class="verdict">${VERDICT_LABEL[verdict]}</span>`}
+        </div>
+        <div class="score">${ownerLabel}${owned ? '' : ` · 推荐分 ${(score * 100).toFixed(0)} / 100（总效用 ${r.utility.toFixed(1)}）`}</div>
+        <ul>
+          <li>空手风险 ${riskText}${isWeapon ? '（音擎池 75/25 · 无定轨）' : ''}</li>
+          <li>装备价值 +${r.combatDelta.toFixed(2)}${owned ? '' : `（${isWeapon ? `边际效用 × ${EQUIPMENT_DEFAULTS.weaponValueRatio}` : '基础+元素+同伴 先验'}）`}</li>
+          <li>预算 ${r.pulls} 抽（机会成本 ${r.cost.toFixed(0)}）</li>
+        </ul>
+      </div>`);
+  }
+  $('equipment-results').innerHTML = cards.join('');
+}
+
+// —— 时序规划 MCTS：场景由卡池数据自动生成（现在抽 vs 攒给未来新角色） ——
+function renderMctsScenarios() {
+  state.scenarios = buildPlanningScenarios(banners, characters);
+  $('mcts-scenarios').innerHTML =
+    state.scenarios
+      .map(
+        (s) => `
+    <div class="mcts-scenario">
+      <div class="mcts-scenario-head">
+        <span>${s.label}</span>
+        <button type="button" class="mcts-run" data-scenario="${s.id}">运行规划</button>
+      </div>
+      <div class="mcts-scenario-result" data-scenario-result="${s.id}"></div>
+    </div>`,
+      )
+      .join('') || '<p class="hint">当前卡池数据没有可规划的「现在 vs 未来」场景。</p>';
+}
+
+function runScenario(id) {
+  const scenario = state.scenarios.find((s) => s.id === id);
+  if (!scenario) return;
+  const target = document.querySelector(`[data-scenario-result="${id}"]`);
   const iterations = Math.min(5000, Math.max(200, Math.round(Number($('mcts-iterations').value) || 1000)));
   const pulls =
     (state.resources.encryptedTapes || 0) + Math.floor((state.resources.polychrome || 0) / 160);
@@ -214,10 +285,7 @@ function runMcts() {
   const initialState = {
     bannerIndex: 0,
     pulls,
-    banners: [
-      { id: 'b-remielle', characterId: 'remielle' }, // 现在抽：上半新角色
-      { id: 'b-sigrid', characterId: 'sigrid' }, // 攒：下半新角色
-    ],
+    banners: scenario.bannerSequence,
     bannerCfg: DEFAULT_CONFIG.character,
     pity: state.resources.pity || 0,
     fails: state.resources.fails || 0,
@@ -226,10 +294,11 @@ function runMcts() {
   };
   const result = mctsPlan(initialState, { iterations });
   const best = result.reduce((a, b) => (a.avgValue > b.avgValue ? a : b));
+  const futureName = characters[scenario.futureTargetId].name;
   const describe = (r) =>
     r.action === 0
-      ? '现在不抽，全部攒给希格莉德'
-      : `现在抽 ${r.action} 抽（${Math.round((r.action / pulls) * 100)}%），余下攒给希格莉德`;
+      ? `现在不抽，全部攒给「${futureName}」`
+      : `现在抽 ${r.action} 抽（${Math.round((r.action / pulls) * 100)}%），余下攒给「${futureName}」`;
   const rows = result
     .map(
       (r) => `
@@ -241,12 +310,12 @@ function runMcts() {
     .join('');
   const conclusion =
     best.action === 0
-      ? `结论：在 ${iterations} 次模拟中，「全部攒给希格莉德」（平均成型收益 ${best.avgValue.toFixed(2)}）优于现在抽。`
-      : `结论：MCTS 建议现在投入 ${best.action} 抽给上半池（平均成型收益 ${best.avgValue.toFixed(2)}），余下攒给希格莉德。`;
+      ? `结论：在 ${iterations} 次模拟中，「全部攒给「${futureName}」」（平均成型收益 ${best.avgValue.toFixed(2)}）优于现在抽。`
+      : `结论：MCTS 建议现在投入 ${best.action} 抽（平均成型收益 ${best.avgValue.toFixed(2)}），余下攒给「${futureName}」。`;
   target.innerHTML = `
     <div class="mcts-summary">${conclusion}</div>
     ${rows}
-    <p class="hint">说明：MCTS 只优化「box 成型收益」（当前体系先验）；喜好分与空手风险未计入。结果随随机模拟波动，可调迭代数重跑；资源变动后需重新运行。预算单位：加密母带 + 菲林 ÷ 160。</p>`;
+    <p class="hint">MCTS 只优化「box 成型收益」（当前体系先验）；喜好分与空手风险未计入。结果随随机模拟波动，资源变动后需重新运行。预算单位：加密母带 + 菲林 ÷ 160。</p>`;
 }
 
 function bindEvents() {
@@ -275,8 +344,14 @@ function bindEvents() {
   });
 
   $('load-my-account').addEventListener('click', loadMyAccount);
-  $('run-mcts').addEventListener('click', runMcts);
   bindImportPanel();
+
+  // MCTS 场景运行按钮（场景由卡池数据动态生成，用事件委托）
+  document.addEventListener('click', (event) => {
+    if (event.target.classList && event.target.classList.contains('mcts-run')) {
+      runScenario(event.target.dataset.scenario);
+    }
+  });
 
   // 权重面板：改动（失焦）即时生效；任何手动改动切换为手动模式
   document.addEventListener('change', (event) => {
@@ -316,6 +391,7 @@ renderResources();
 renderBox();
 renderPools();
 renderResults();
+renderEquipmentResults();
 renderWeights();
-runMcts();
+renderMctsScenarios();
 bindEvents();

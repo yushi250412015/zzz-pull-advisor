@@ -15,4 +15,29 @@ export const banners = [
     firstGoldGuaranteed: true,
     note: '下半自选混池·首金必不歪',
   },
+  // —— 音擎 / 邦布（type 区分；配对与情报见 equipment.js 注释） ——
+  {
+    id: 'w-kongyu',
+    version: '3.1',
+    type: 'weapon',
+    weaponId: 'kongyu-fuguizhishi',
+    phase: 'current',
+    note: '上半·蕾米埃尔专武（空羽复归之诗，已验证）',
+  },
+  {
+    id: 'w-xiaoqi',
+    version: '3.1',
+    type: 'weapon',
+    weaponId: 'xiaoqi-lizan',
+    phase: 'second-half',
+    note: '下半·推断为希格莉德专武（骁骑礼赞，待 08-19 实装核实）',
+  },
+  {
+    id: 'b-airuier',
+    version: '3.1',
+    type: 'bangboo',
+    bangbooId: 'airuier',
+    phase: 'current',
+    note: '3.1 新 S 邦布·以太·蕾米埃尔阵营',
+  },
 ];

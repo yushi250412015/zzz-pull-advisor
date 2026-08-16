@@ -100,3 +100,19 @@
 - **版本时间**：2026/07/29–2026/09/09（42 天）；停服补偿菲林 300 + 问题修复补偿菲林 300
 - **快照**：`docs/data/ann-content-1262-2026-08.json`（gitignore）；接口 `fetchAnnContent(1262)` 可随时重取
 
+
+
+## 9. 音擎 / 邦布情报（3.1，2026-08 核实，用于 A 方向推荐建模）
+
+- **空羽复归之诗**（异常 S 音擎）= 蕾米埃尔毕业音擎：BWIKI 蕾米埃尔页「音擎推荐/毕业音擎」实测 <https://wiki.biligame.com/zzz/蕾米埃尔>；官方公告「空羽复归之诗」频段
+- **骁骑礼赞**（强攻 S 音擎）：官方公告「骁骑礼赞」频段；按定位**推断**为希格莉德专武（BWIKI 页面尚未建——希格莉德 2026-08-19 才实装）→ `equipment.js` 标记 `pairing: 'inferred'`，待实装后核实
+- **艾瑞儿**：官方公告「卓越搭档」频段 S 邦布；BWIKI：伤害属性**以太**、阵营达识结社、阵营代理人蕾米埃尔 <https://wiki.biligame.com/zzz/艾瑞儿>
+- **希格莉德实装 2026-08-19**（BWIKI 信息框）= 3.1 下半
+- 价值模型先验（`recommend-equipment.js` 的 `EQUIPMENT_DEFAULTS`，可调参数、待实测校准）：专武 ≈ 角色贡献 × 0.6；邦布 = 基础 6 + 元素匹配 4 + 阵营同伴 2；音擎池概率用 `DEFAULT_CONFIG.weapon`（75/25、无定轨、硬保底 80，软保底 66 待核实）；邦布池官方概率暂不可得（官方概率页地区受限）→ risk 记 null 并诚实标注
+
+## 10. 版本数据工具链（scripts/，A 方向）
+
+- `update-banners.mjs`：拉官方公告 → `extractReleaseFacts` 提取「全新代理人/音擎/邦布」官方陈述 → 与 characters.js/equipment.js 对比输出「已录入/【新增】」+ 事实落盘 `docs/data/version-facts-<日期>.json`（gitignore）；**不自动改源码**，人工审阅后更新
+- `archive-announcements.mjs`：公告列表+正文全量归档 `docs/data/ann-archive-<日期>.json`（gitignore）
+- 实测运行（2026-08-16）：3.1 全部条目「已录入」，时间窗 2026/07/29 → 2026/09/09 提取正确
+

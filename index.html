@@ -53,6 +53,12 @@
       </section>
 
       <section class="panel">
+        <h2>音擎 / 邦布推荐</h2>
+        <div id="equipment-results"></div>
+        <p class="hint">价值模型为先验参数（专武 ≈ 角色贡献 × 0.6；邦布 = 基础+元素+阵营同伴），音擎池概率用 75/25 无定轨（软保底 66 待核实），邦布池官方概率暂不可得（风险显示 —）。「已拥有」来自你的真实账号记录；专武建议先拥有对应角色。</p>
+      </section>
+
+      <section class="panel">
         <h2>决策权重（可调）</h2>
         <div class="weights-grid">
           <label>强度 α_c <input type="number" id="w-combat" min="0" max="1" step="0.05" /></label>
@@ -70,13 +76,12 @@
       </section>
 
       <section class="panel">
-        <h2>时序规划 · MCTS：现在抽 vs 攒希格莉德</h2>
-        <p class="hint">比较「现在把预算投入上半池（蕾米埃尔）各比例」与「全部攒给下半希格莉德」的平均成型收益（基于当前 box 与体系先验）。</p>
+        <h2>时序规划 · MCTS：现在抽 vs 攒给未来新角色</h2>
+        <p class="hint">场景由卡池数据（banners.js）自动生成：上半各目标 vs 下半非自选新角色。点击各场景的「运行规划」执行 MCTS 模拟，比较各预算动作的平均成型收益。</p>
         <div class="mcts-controls">
           <label>迭代次数 <input type="number" id="mcts-iterations" min="200" max="5000" step="100" value="1000" /></label>
-          <button id="run-mcts" type="button">运行 MCTS 规划</button>
         </div>
-        <div id="mcts-result"></div>
+        <div id="mcts-scenarios"></div>
       </section>
     </div>
     <script type="module" src="/src/main.js"></script>

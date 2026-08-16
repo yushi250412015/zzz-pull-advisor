@@ -315,3 +315,48 @@ h1 {
 .weights-controls button:hover {
   background: #eef2f7;
 }
+
+.eq-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: #4338ca;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.mcts-scenario {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+
+.mcts-scenario-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mcts-run {
+  padding: 5px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #f8fafc;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.mcts-run:hover {
+  background: #eef2f7;
+}
+
+.mcts-scenario-result {
+  margin-top: 8px;
+}

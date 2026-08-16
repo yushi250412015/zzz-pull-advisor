@@ -6,6 +6,10 @@
 
 ### 新增
 
+- **【A·数据完备化】音擎 / 邦布推荐**：`src/data/equipment.js`（官方公告 + BWIKI 核实的 3.1 装备数据；骁骑礼赞配对为推断并标注，待 08-19 实装核实）；`src/core/recommend-equipment.js` 纯函数推荐引擎（专武价值 = 角色贡献 × 可学习比例 0.6；邦布 = 基础+元素+阵营同伴先验；音擎池 75/25 无定轨概率；邦布池官方概率暂缺 → risk=null 诚实标注）；UI 新增「音擎 / 邦布推荐」面板（已拥有状态来自真实账号）；单测 8 项
+- **【A·数据完备化】版本数据更新工具链**：`extractReleaseFacts` 纯函数（从官方版本公告提取代理人/音擎/邦布官方陈述与时间窗，官方格式正则 + 贪婪踩坑修复）+ 单测 4 项（真实 3.1 文本夹具）；`scripts/update-banners.mjs`（对比「已录入/新增」+ 事实 JSON，不自动改源码）、`scripts/archive-announcements.mjs`（公告全量归档）；实测：3.1 全部条目「已录入」，时间窗 07/29→09/09 正确
+- **【B·MCTS 泛化】时序场景自动生成**：`buildPlanningScenarios`（由 banners.js 自动生成「上半各目标 vs 下半非自选新角色」场景，3.1 → 2 场景）+ 单测；UI 改为多场景卡片（各自运行、共享迭代数），移除硬编码的「蕾米埃尔 vs 希格莉德」场景
+- 测试 99 项（+12：equipment 8 + version-facts 4）
 - **【低】权重面板**：α_c / α_f / λ_risk / α_cost 与「抽/观望」阈值全部可调，改动（失焦）即时反映推荐结果；自动模式按「3.1 零氪 140 抽 + 账号欧非 80.4 抽/S（偏非）」推导 λ_risk≈38.9、α_cost≈0.143（`deriveWeights` 首次接 UI），任何手动改动即切手动模式；含恢复默认按钮
 - **数据可信度审计（防信息污染）**：以官方公告 API（ann_id 1262 实测）为主口径 + BWIKI 信息框逐项核对，39 位角色 element/role/rarity/版本与既有数据**无冲突**；来源分级（官方公告/BWIKI 实测/多社区常识）与受限官方源（HoYoWiki、官网内容 API、官方概率 JSON 的地区限制）如实记录于 `docs/data-sources.md` §7；官方 3.1 情报（两代理人/两音擎/邦布艾瑞儿、版本时间与补偿）归档 §8，快照 `docs/data/ann-content-1262-2026-08.json`
 - **「从记录实时导入」全流程**：纯函数汇总模块 `src/datasource/import-summary.js`（逐池 pulls/pity/fails/S 历史/box/欧非，ZZZ 语义）+ 单测 7 项；本地脚本 `scripts/import-records.mjs`（`--url` / `--log` / 自动扫描日志目录 / `--records` 离线重解析 → 四池拉取 → 快照 JSON + 与手填 my-account 一致性对比）；**实测验收：1168 条真实记录重解析 13/13 与手填值一致**
